@@ -1,0 +1,30 @@
+{
+  "name": "KcDebugSwift",
+  "version": "0.1.0",
+  "summary": "A short description of KcDebugSwift.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/张杰/KcDebugSwift",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "张杰": "527512749@qq.com"
+  },
+  "source": {
+    "git": "https://code.badam.mobi/zhangjie/kcdebugswift.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "swift_versions": "5.0",
+  "subspecs": [
+    {
+      "name": "DebugIvar",
+      "source_files": "KcDebugSwift/Classes/DebugIvar/**/*",
+      "frameworks": "UIKit"
+    }
+  ],
+  "swift_version": "5.0"
+}
