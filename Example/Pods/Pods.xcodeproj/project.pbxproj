@@ -13,6 +13,8 @@
 		841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99366E778692D02AACFE5EFB421FD30A /* Pods-KcDebugSwift_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D781C612FAF8F33717E466ACBA906619 /* Pods-KcDebugSwift_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA309D02B051D7AF54D6FA1EDB8CC4D0 /* Pods-KcDebugSwift_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */; };
+		C1EB1A22262EACBA00FF6AC1 /* KcDebugObjcClass.h in Headers */ = {isa = PBXBuildFile; fileRef = C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */; };
+		C1EB1A23262EACBA00FF6AC1 /* KcDebugObjcClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */; };
 		C2F552327A956567B868092814639540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
 		C9F9B353B6712642BCB250C52DFBD297 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */; };
 		CAA6AE15E7C84DC621AE4809D748A71E /* Pods-KcDebugSwift_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2903CB6C8BA5F40FCEF84064B50B528A /* Pods-KcDebugSwift_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -42,33 +44,35 @@
 		0EDA86EFEEFC77EBF110B2EE0CCF722A /* Pods-KcDebugSwift_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-KcDebugSwift_Example.modulemap"; sourceTree = "<group>"; };
 		20773FAFC17EB2DC2E2FE38BAFDF3814 /* Pods-KcDebugSwift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-KcDebugSwift_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		255B082B440AF9B2683133684183D6A5 /* Pods-KcDebugSwift_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-KcDebugSwift_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		27849CFADFEC6B9B08AF2E59560E45BE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		27849CFADFEC6B9B08AF2E59560E45BE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2903CB6C8BA5F40FCEF84064B50B528A /* Pods-KcDebugSwift_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-KcDebugSwift_Example-umbrella.h"; sourceTree = "<group>"; };
-		2B6D0F27AFC1B12E5913B725D80BB3C8 /* Pods_KcDebugSwift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_KcDebugSwift_Tests.framework; path = "Pods-KcDebugSwift_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B6D0F27AFC1B12E5913B725D80BB3C8 /* Pods_KcDebugSwift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KcDebugSwift_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD280B82B11C79065C2913790F8B4E7 /* Pods-KcDebugSwift_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-KcDebugSwift_Example-Info.plist"; sourceTree = "<group>"; };
 		2E59594F4116631A1358E1D8530DEDC5 /* KcDebugIvarTool.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KcDebugIvarTool.swift; path = KcDebugSwift/Classes/DebugIvar/KcDebugIvarTool.swift; sourceTree = "<group>"; };
 		495610C816F291E67D0991591FBD88C2 /* Pods-KcDebugSwift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-KcDebugSwift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5B23FEF9497E6040FDE3C7FA4D74F735 /* KcDebugSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = KcDebugSwift.release.xcconfig; sourceTree = "<group>"; };
-		5DE74DF465071832664D9BFA702D37B7 /* Pods_KcDebugSwift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_KcDebugSwift_Example.framework; path = "Pods-KcDebugSwift_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5DE74DF465071832664D9BFA702D37B7 /* Pods_KcDebugSwift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KcDebugSwift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		674E10C343BDEE19349AA956201992D9 /* Pods-KcDebugSwift_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-KcDebugSwift_Tests.modulemap"; sourceTree = "<group>"; };
 		79ABAE45EF0D13101195B70FDB613295 /* Pods-KcDebugSwift_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-KcDebugSwift_Tests-Info.plist"; sourceTree = "<group>"; };
 		7AF0EAC418CCC32CDD09A52F7A07E7CF /* Pods-KcDebugSwift_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-KcDebugSwift_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		88A7038E82BC7981935A200EBA353328 /* KcDebugSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = KcDebugSwift.framework; path = KcDebugSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		88A7038E82BC7981935A200EBA353328 /* KcDebugSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KcDebugSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89B4493BA12ABF900B68A05CE26FCF00 /* KcDebugSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "KcDebugSwift-dummy.m"; sourceTree = "<group>"; };
 		8A8EB171B28E5D30DD77B645C2CBB383 /* Pods-KcDebugSwift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-KcDebugSwift_Example.release.xcconfig"; sourceTree = "<group>"; };
 		99D9DE3C1987C7C576A29DE2D50FC78F /* Pods-KcDebugSwift_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-KcDebugSwift_Example-dummy.m"; sourceTree = "<group>"; };
 		9D0AE3106534408B5A041921D8D0D42E /* Pods-KcDebugSwift_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-KcDebugSwift_Example-frameworks.sh"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A54B524D37AC8A003A1EE990B4F1A935 /* KcDebugSwift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = KcDebugSwift.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A54B524D37AC8A003A1EE990B4F1A935 /* KcDebugSwift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = KcDebugSwift.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A6C0959F271B1C249D3E4C045278F5DC /* KcDebugSwift.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = KcDebugSwift.modulemap; sourceTree = "<group>"; };
 		A8205C4AFB3A9FBBB6DDBEB3250D7F29 /* Pods-KcDebugSwift_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-KcDebugSwift_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-umbrella.h"; sourceTree = "<group>"; };
 		B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-KcDebugSwift_Tests-dummy.m"; sourceTree = "<group>"; };
 		BAF4A04205BBA664DACF0595D3DDD7AA /* KcDebugSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-prefix.pch"; sourceTree = "<group>"; };
+		C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KcDebugObjcClass.h; path = KcDebugSwift/Classes/DebugIvar/KcDebugObjcClass.h; sourceTree = "<group>"; };
+		C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KcDebugObjcClass.m; path = KcDebugSwift/Classes/DebugIvar/KcDebugObjcClass.m; sourceTree = "<group>"; };
 		C6614CC405FB9C439751AC0BCFA08E1B /* Pods-KcDebugSwift_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-KcDebugSwift_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		CA9D221A568EE2C0C5C14E3697CF9561 /* KcDebugSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "KcDebugSwift-Info.plist"; sourceTree = "<group>"; };
 		D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		D44B89A1CDAED397DD2E29B194C27E54 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		D44B89A1CDAED397DD2E29B194C27E54 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		D781C612FAF8F33717E466ACBA906619 /* Pods-KcDebugSwift_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-KcDebugSwift_Tests-umbrella.h"; sourceTree = "<group>"; };
 		E92CD291ABB9CA73D7BD3449A20EDD41 /* Pods-KcDebugSwift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-KcDebugSwift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -132,6 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				2E59594F4116631A1358E1D8530DEDC5 /* KcDebugIvarTool.swift */,
+				C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */,
+				C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */,
 			);
 			name = DebugIvar;
 			sourceTree = "<group>";
@@ -243,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */,
+				C1EB1A22262EACBA00FF6AC1 /* KcDebugObjcClass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1EB1A23262EACBA00FF6AC1 /* KcDebugObjcClass.m in Sources */,
 				7B46F061CF493AAB78CD3E9B628C75B4 /* KcDebugIvarTool.swift in Sources */,
 				59F364C34D79F9B58684961F3F537DD5 /* KcDebugSwift-dummy.m in Sources */,
 			);
@@ -700,8 +708,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
