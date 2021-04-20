@@ -13,8 +13,8 @@
 		841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99366E778692D02AACFE5EFB421FD30A /* Pods-KcDebugSwift_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D781C612FAF8F33717E466ACBA906619 /* Pods-KcDebugSwift_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA309D02B051D7AF54D6FA1EDB8CC4D0 /* Pods-KcDebugSwift_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */; };
-		C1EB1A22262EACBA00FF6AC1 /* KcDebugObjcClass.h in Headers */ = {isa = PBXBuildFile; fileRef = C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */; };
-		C1EB1A23262EACBA00FF6AC1 /* KcDebugObjcClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */; };
+		C1EB1A70262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h in Headers */ = {isa = PBXBuildFile; fileRef = C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */; };
+		C1EB1A71262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */; };
 		C2F552327A956567B868092814639540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
 		C9F9B353B6712642BCB250C52DFBD297 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */; };
 		CAA6AE15E7C84DC621AE4809D748A71E /* Pods-KcDebugSwift_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2903CB6C8BA5F40FCEF84064B50B528A /* Pods-KcDebugSwift_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -67,8 +67,8 @@
 		B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-umbrella.h"; sourceTree = "<group>"; };
 		B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-KcDebugSwift_Tests-dummy.m"; sourceTree = "<group>"; };
 		BAF4A04205BBA664DACF0595D3DDD7AA /* KcDebugSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-prefix.pch"; sourceTree = "<group>"; };
-		C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KcDebugObjcClass.h; path = KcDebugSwift/Classes/DebugIvar/KcDebugObjcClass.h; sourceTree = "<group>"; };
-		C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KcDebugObjcClass.m; path = KcDebugSwift/Classes/DebugIvar/KcDebugObjcClass.m; sourceTree = "<group>"; };
+		C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSObject+KcDebugObjcClass.h"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+KcDebugObjcClass.h"; sourceTree = "<group>"; };
+		C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSObject+KcDebugObjcClass.m"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+KcDebugObjcClass.m"; sourceTree = "<group>"; };
 		C6614CC405FB9C439751AC0BCFA08E1B /* Pods-KcDebugSwift_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-KcDebugSwift_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		CA9D221A568EE2C0C5C14E3697CF9561 /* KcDebugSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "KcDebugSwift-Info.plist"; sourceTree = "<group>"; };
 		D245E0514AAC1A2B9A6D5EA2F383E90F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -136,8 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				2E59594F4116631A1358E1D8530DEDC5 /* KcDebugIvarTool.swift */,
-				C1EB1A20262EACBA00FF6AC1 /* KcDebugObjcClass.h */,
-				C1EB1A21262EACBA00FF6AC1 /* KcDebugObjcClass.m */,
+				C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */,
+				C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */,
 			);
 			name = DebugIvar;
 			sourceTree = "<group>";
@@ -249,7 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */,
-				C1EB1A22262EACBA00FF6AC1 /* KcDebugObjcClass.h in Headers */,
+				C1EB1A70262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,8 +394,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1EB1A23262EACBA00FF6AC1 /* KcDebugObjcClass.m in Sources */,
 				7B46F061CF493AAB78CD3E9B628C75B4 /* KcDebugIvarTool.swift in Sources */,
+				C1EB1A71262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m in Sources */,
 				59F364C34D79F9B58684961F3F537DD5 /* KcDebugSwift-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
