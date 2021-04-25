@@ -13,6 +13,8 @@
 		841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99366E778692D02AACFE5EFB421FD30A /* Pods-KcDebugSwift_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D781C612FAF8F33717E466ACBA906619 /* Pods-KcDebugSwift_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA309D02B051D7AF54D6FA1EDB8CC4D0 /* Pods-KcDebugSwift_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */; };
+		C1BB63BD26356F3000045A6C /* NSObject+DLIntrospection.h in Headers */ = {isa = PBXBuildFile; fileRef = C1BB63BB26356F3000045A6C /* NSObject+DLIntrospection.h */; };
+		C1BB63BE26356F3000045A6C /* NSObject+DLIntrospection.m in Sources */ = {isa = PBXBuildFile; fileRef = C1BB63BC26356F3000045A6C /* NSObject+DLIntrospection.m */; };
 		C1EB1A70262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h in Headers */ = {isa = PBXBuildFile; fileRef = C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */; };
 		C1EB1A71262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */; };
 		C2F552327A956567B868092814639540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAB6F611E86A4758835A715E4B4184F6 /* Foundation.framework */; };
@@ -67,6 +69,8 @@
 		B6DBF50FEBD6FAFB1C91410BDD7A352F /* KcDebugSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-umbrella.h"; sourceTree = "<group>"; };
 		B990E25D35D0DB6E9169F28277CD1C1C /* Pods-KcDebugSwift_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-KcDebugSwift_Tests-dummy.m"; sourceTree = "<group>"; };
 		BAF4A04205BBA664DACF0595D3DDD7AA /* KcDebugSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "KcDebugSwift-prefix.pch"; sourceTree = "<group>"; };
+		C1BB63BB26356F3000045A6C /* NSObject+DLIntrospection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+DLIntrospection.h"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+DLIntrospection.h"; sourceTree = "<group>"; };
+		C1BB63BC26356F3000045A6C /* NSObject+DLIntrospection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+DLIntrospection.m"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+DLIntrospection.m"; sourceTree = "<group>"; };
 		C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSObject+KcDebugObjcClass.h"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+KcDebugObjcClass.h"; sourceTree = "<group>"; };
 		C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSObject+KcDebugObjcClass.m"; path = "KcDebugSwift/Classes/DebugIvar/NSObject+KcDebugObjcClass.m"; sourceTree = "<group>"; };
 		C6614CC405FB9C439751AC0BCFA08E1B /* Pods-KcDebugSwift_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-KcDebugSwift_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
@@ -138,6 +142,8 @@
 				2E59594F4116631A1358E1D8530DEDC5 /* KcDebugIvarTool.swift */,
 				C1EB1A6E262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h */,
 				C1EB1A6F262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m */,
+				C1BB63BB26356F3000045A6C /* NSObject+DLIntrospection.h */,
+				C1BB63BC26356F3000045A6C /* NSObject+DLIntrospection.m */,
 			);
 			name = DebugIvar;
 			sourceTree = "<group>";
@@ -250,6 +256,7 @@
 			files = (
 				841961D14A2482D220C00177AB00FE5E /* KcDebugSwift-umbrella.h in Headers */,
 				C1EB1A70262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.h in Headers */,
+				C1BB63BD26356F3000045A6C /* NSObject+DLIntrospection.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7B46F061CF493AAB78CD3E9B628C75B4 /* KcDebugIvarTool.swift in Sources */,
+				C1BB63BE26356F3000045A6C /* NSObject+DLIntrospection.m in Sources */,
 				C1EB1A71262EB23300FF6AC1 /* NSObject+KcDebugObjcClass.m in Sources */,
 				59F364C34D79F9B58684961F3F537DD5 /* KcDebugSwift-dummy.m in Sources */,
 			);

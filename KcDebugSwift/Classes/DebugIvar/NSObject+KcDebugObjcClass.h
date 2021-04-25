@@ -9,6 +9,40 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/* 常用的lldb调试命令
+ 
+ 1.help 什么
+    * help express ...
+ 2.执行
+    * e
+    * p
+    * frame variable
+    * po
+ 3.swift - oc 相互转换
+    * 在swift环境中 expression -l swift —
+    * oc环境中 expr -l objc++ -O --
+ 4.根据内存查找崩溃信息的位置
+    * image lookup --address 0x00000001041d3936
+ 5.查看内存情况
+    * language swift refcount 对象
+ 6.监听某个对象
+    * watch set variable dog->_skill
+ 7.打印寄存器
+    * po $arg1 $arg2
+ 
+ 线程、帧相关
+    * 帧信息: frame info
+    * 所有线程: thread list
+    * thread info
+    * 堆栈信息: bt
+ 
+ 别名
+    * command alias poc expression -l objc -O --
+ 
+ 读取寄存器
+    * register read $arg1 $arg2
+ */
+
 // 使用自定义的class包装方法需要强转使用 [KcDebugObjcClass ivarsWithObjc:(NSObject *)0x7fea43513c50] so才扩展的NSObject方法
 // 使用: e -l objc -O -- [0x7fea43513c50 kc_log_methods]
 // expr -l objc++ -O -- [0x7fea43513c50 kc_log_methods]
