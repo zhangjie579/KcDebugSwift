@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'KcDebugSwift'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'A short description of KcDebugSwift.'
 
 # This description is used to generate tags and improve search results.
@@ -45,6 +45,11 @@ TODO: Add long description of the pod here.
   # lldb调试成员变量ivar
   s.subspec 'DebugIvar' do |d|
       d.source_files = 'KcDebugSwift/Classes/DebugIvar/**/*'
+      d.frameworks = 'UIKit'
+  end
+  
+  s.subspec 'Tool' do |d|
+      d.source_files = 'KcDebugSwift/Classes/Tool/**/*'
       d.frameworks = 'UIKit'
   end
   
