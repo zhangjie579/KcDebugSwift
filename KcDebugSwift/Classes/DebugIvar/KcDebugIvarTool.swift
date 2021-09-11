@@ -20,6 +20,43 @@ import UIKit
  */
 @objc
 public extension NSObject {
+    /// 查找UI的属性名(这里包含了CALayer)
+    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findUIPropertyName]
+    /*
+     查不到的情况
+     1. delegate设置为不是UIResponder对象, 或者它不在图层树上
+     */
+    func kc_debug_findUIPropertyName() {
+        
+        /// 处理layer delegate情况, 默认情况下delegate为UIView
+        func handleLayerDelegate(delegate: CALayerDelegate) {
+            if let responder = delegate as? UIResponder {
+                UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: responder)
+            } else { // 这种情况暂时不知道如何处理
+                print("------------ 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻 ---------------")
+            }
+        }
+        
+        if isKind(of: UIView.self) {
+            (self as? UIView)?.kc_debug_findPropertyName()
+        } else if isKind(of: CALayer.self), let layer = self as? CALayer {
+            if let delegate = layer.delegate {
+                handleLayerDelegate(delegate: delegate)
+            } else { // 没有代理
+                var superlayer = layer.superlayer
+                
+                while let nextLayer = superlayer {
+                    if let delegate = nextLayer.delegate {
+                        handleLayerDelegate(delegate: delegate)
+                        break
+                    } else {
+                        superlayer = superlayer?.superlayer
+                    }
+                }
+            }
+        }
+    }
+    
     /// 输出所有ivar
     /// expr -l objc++ -O -- [((NSObject *)0x7f8738007690) kc_debug_ivarDescription:0]
     func kc_debug_ivarDescription(_ rawValue: KcAnalyzeIvarType = .default) {
@@ -73,6 +110,16 @@ public extension UIView {
     /// 查找UI的属性名
     /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
     func kc_debug_findPropertyName() {
+        UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: next)
+    }
+}
+
+extension UIView {
+    /// 查找objc的属性名
+    /// - Parameters:
+    ///   - object: 要查询的对象
+    ///   - startSearchView: 从这个view的properties开始查, 然后递归nextResponder
+    class func kc_debug_findObjcPropertyName(object: NSObject, startSearchView: UIResponder?) {
         print("------------ 👻 查询属性name 👻 ---------------")
         
         var container: NSObject?
@@ -81,7 +128,7 @@ public extension UIView {
         /// 查找property
         func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: UIResponder) -> Bool {
             // 遍历当前容器的propertys
-            for childInfo in ivarInfo.childs where isEqual(childInfo.value) {
+            for childInfo in ivarInfo.childs where childInfo.isEqual(objc: object) {
                 container = currentContainer
                 propertyInfo = childInfo
                 return true
@@ -89,7 +136,7 @@ public extension UIView {
             
             // 遍历super容器的propertys
             for superInfo in ivarInfo.supers where !superInfo.childs.isEmpty {
-                for childInfo in superInfo.childs where isEqual(childInfo.value) {
+                for childInfo in superInfo.childs where childInfo.isEqual(objc: object) {
                     container = currentContainer
                     propertyInfo = childInfo
                     return true
@@ -101,7 +148,7 @@ public extension UIView {
         
         let ivarTool = KcAnalyzePropertyTool(type: .hasSuper)
         
-        var nextResponder = next
+        var nextResponder: UIResponder? = startSearchView
         
         while let next = nextResponder {
             defer {
@@ -125,7 +172,7 @@ public extension UIView {
             let log = """
                 in \(containClassName):
                 😁😁😁 查找属性的属性名name: \(info.name),
-                😁😁😁 查找属性: \(self)
+                😁😁😁 查找属性: \(object)
                 😁😁😁 容器: \(objc)
                 """
             print(log)
@@ -359,6 +406,38 @@ public extension KcPropertyInfo {
         
         let description = recursionChilds(info: self)
         print(description)
+    }
+    
+    /// 判断是否相等, 有些情况也不知道如何处理⚠️
+    func isEqual(objc: NSObject) -> Bool {
+        if objc.isEqual(value) {
+            return true
+        }
+        
+        switch mirror.displayStyle {
+        case .collection:
+            if let array = value as? [AnyObject] {
+                return array.contains(where: { objc.isEqual($0) })
+            } else {
+                return false
+            }
+        case .dictionary:
+            if let dict = value as? [String : AnyObject] {
+                return dict.values.contains(where: { objc.isEqual($0) })
+            } else {
+                return false
+            }
+        case .set:
+            if let set = value as? Set<NSObject> {
+                return set.contains(where: { objc.isEqual($0) })
+            } else {
+                return false
+            }
+        case .tuple: // 不知道如何处理
+            return false
+        default:
+            return false
+        }
     }
     
     var description: String {
