@@ -66,18 +66,88 @@ public extension NSObject {
     }
 }
 
-// MARK: - KcIvarInfo
+// MARK: - UIView
+
+@objc
+public extension UIView {
+    /// 获取UI的属性名
+    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_getUIPropertyName]
+    func kc_debug_getUIPropertyName() {
+        print("------------ 👻 ivar description 👻 ---------------")
+        let ivarTool = KcAnalyzeIvarTool(type: .hasSuper)
+        
+        var nextResponder = (self as? UIResponder)?.next
+        
+        var container: NSObject?
+        var propertyInfo: KcIvarInfo?
+        
+        /// 查找property
+        func findProperty(from ivarInfo: KcIvarInfo, currentContainer: UIResponder) -> Bool {
+            // 遍历当前容器的propertys
+            for childInfo in ivarInfo.childs {
+                if self.isEqual(childInfo.object) {
+                    container = currentContainer
+                    propertyInfo = childInfo
+                    return true
+                }
+            }
+            
+            // 遍历super容器的propertys
+            for superInfo in ivarInfo.supers where !superInfo.childs.isEmpty {
+                for childInfo in superInfo.childs {
+                    if self.isEqual(childInfo.object) {
+                        container = currentContainer
+                        propertyInfo = childInfo
+                        return true
+                    }
+                }
+            }
+            
+            return false
+        }
+        
+        while let next = nextResponder {
+            defer {
+                nextResponder = nextResponder?.next
+            }
+            
+            let mirror = Mirror(reflecting: next)
+            guard ivarTool.shouldHandleMirror(mirror),
+                  let ivarInfo = ivarTool.ivarsFromValue(next, depth: 0),
+                  !ivarInfo.childs.isEmpty else {
+                continue
+            }
+            
+            if findProperty(from: ivarInfo, currentContainer: next) {
+                break
+            }
+        }
+        
+        if let objc = container, let info = propertyInfo {
+            let containClassName = info.containMirror?.kc_className ?? "\(type(of: objc))"
+            let log = """
+                😁😁😁 查找属性的属性名name: \(info.name)
+                😁😁😁 容器: \(containClassName), \(objc)
+                """
+            print(log)
+        }
+        
+        print("------------ 👻 ivar description 👻 ---------------")
+    }
+}
+
+// MARK: - KcIvarInfo 属性信息
 
 public class KcIvarInfo {
     let name: String
     let containMirror: Mirror? // 容器
     let mirror: Mirror // 当前对象
-    let ivar: Any?
-    weak var object: AnyObject?
+    let ivar: Any? // 非对象时存储的值
+    weak var object: AnyObject? // 对象
     let address: String? // 地址
     let depth: Int       // 深度 - 最多3层
     
-    var supers: [KcIvarInfo] = []
+    var supers: [KcIvarInfo] = [] // 继承的super层级
     var childs: [KcIvarInfo] // 子类
     
     public init(name: String,
@@ -120,16 +190,7 @@ public extension KcIvarInfo {
     }
     
     var className: String {
-//        let name: String?
-//        if let object = object {
-//            name = "\(type(of: object))"
-//        } else if let ivar = ivar {
-//            name = "\(type(of: ivar))"
-//        } else {
-//            name = nil
-//        }
-        
-        return "\(mirror.subjectType)"
+        return mirror.kc_className
     }
     
     func log(filter: (KcIvarInfo) -> Bool) {
@@ -300,7 +361,7 @@ private extension KcAnalyzeIvarTool {
 public extension Mirror {
     /// 对象是否为optional
     var kc_isOptionalValue: Bool {
-        return displayStyle == .optional
+        return displayStyle == .optional || _typeName(subjectType).hasPrefix("Swift.ImplicitlyUnwrappedOptional<")
     }
     
     /// 去反射value的可选值的mirror: 当反射value为optional, 它为value去optional的mirror
@@ -308,10 +369,33 @@ public extension Mirror {
         guard kc_isOptionalValue else {
             return (self, value)
         }
+        
+//        if let wapperValue = children.first?.value {
+//            return Mirror(reflecting: wapperValue).kc_filterOptionalReflectValue(wapperValue)
+//        }
         for (key, value) in children where key == "some" {
             return Mirror(reflecting: value).kc_filterOptionalReflectValue(value)
         }
         return nil
+    }
+    
+    var kc_className: String {
+//        let name: String?
+//        if let object = object {
+//            name = "\(type(of: object))"
+//        } else if let ivar = ivar {
+//            name = "\(type(of: ivar))"
+//        } else {
+//            name = nil
+//        }
+        
+//        return "\(mirror.subjectType)"
+        
+        let type = _typeName(subjectType)
+            .replacingOccurrences(of: "__C.", with: "")
+            .replacingOccurrences(of: "Swift.", with: "")
+        
+        return type
     }
 }
 
