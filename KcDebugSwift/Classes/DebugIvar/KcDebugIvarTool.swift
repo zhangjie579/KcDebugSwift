@@ -29,27 +29,33 @@ public extension NSObject {
     func kc_debug_findUIPropertyName() {
         
         /// 处理layer delegate情况, 默认情况下delegate为UIView
-        func handleLayerDelegate(delegate: CALayerDelegate) {
+        func handleLayerDelegate(delegate: CALayerDelegate) -> Bool {
             if let responder = delegate as? UIResponder {
-                UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: responder)
+                return UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: responder)
             } else { // 这种情况暂时不知道如何处理
                 print("------------ 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻 ---------------")
+                return false
             }
         }
         
         if isKind(of: UIView.self) {
             (self as? UIView)?.kc_debug_findPropertyName()
         } else if isKind(of: CALayer.self), let layer = self as? CALayer {
-            if let delegate = layer.delegate {
-                handleLayerDelegate(delegate: delegate)
+            if let delegate = layer.delegate, handleLayerDelegate(delegate: delegate) {
+                return
             } else { // 没有代理
                 var superlayer = layer.superlayer
                 
                 while let nextLayer = superlayer {
-                    if let delegate = nextLayer.delegate {
-                        handleLayerDelegate(delegate: delegate)
-                        break
+                    if let delegate = nextLayer.delegate,
+                       handleLayerDelegate(delegate: delegate) {
+                        return
                     } else {
+                        if Mirror.kc_isCustomClass(type(of: nextLayer)),
+                           nextLayer.kc_debug_findObjcPropertyName(object: self) {
+                            return
+                        }
+                        
                         superlayer = superlayer?.superlayer
                     }
                 }
@@ -101,32 +107,17 @@ public extension NSObject {
         }
         print("------------ 👻 UI ivar description 👻 ---------------")
     }
-}
-
-// MARK: - UIView
-
-@objc
-public extension UIView {
-    /// 查找UI的属性名
-    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
-    func kc_debug_findPropertyName() {
-        UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: next)
-    }
-}
-
-extension UIView {
-    /// 查找objc的属性名
+    
+    /// 从当前对象, 查找objc的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
     /// - Parameters:
     ///   - object: 要查询的对象
-    ///   - startSearchView: 从这个view的properties开始查, 然后递归nextResponder
-    class func kc_debug_findObjcPropertyName(object: NSObject, startSearchView: UIResponder?) {
-        print("------------ 👻 查询属性name 👻 ---------------")
-        
+    // expr -l objc++ -O -- [0x7f8738007690 kc_debug_findObjcPropertyNameWithObject:0x7f8738007690]
+    func kc_debug_findObjcPropertyName(object: NSObject) -> Bool {
         var container: NSObject?
         var propertyInfo: KcPropertyInfo?
         
         /// 查找property
-        func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: UIResponder) -> Bool {
+        func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: NSObject) -> Bool {
             // 遍历当前容器的propertys
             for childInfo in ivarInfo.childs where childInfo.isEqual(objc: object) {
                 container = currentContainer
@@ -148,24 +139,18 @@ extension UIView {
         
         let ivarTool = KcAnalyzePropertyTool(type: .hasSuper)
         
-        var nextResponder: UIResponder? = startSearchView
-        
-        while let next = nextResponder {
-            defer {
-                nextResponder = nextResponder?.next
-            }
-            
-            let mirror = Mirror(reflecting: next)
-            guard mirror.kc_isCustomClass,
-                  let ivarInfo = ivarTool.ivarsFromValue(next, depth: 0, name: "查询对象😄"),
-                  !ivarInfo.childs.isEmpty else {
-                continue
-            }
-            
-            if findProperty(from: ivarInfo, currentContainer: next) {
-                break
-            }
+        let mirror = Mirror(reflecting: self)
+        guard mirror.kc_isCustomClass,
+              let ivarInfo = ivarTool.ivarsFromValue(self, depth: 0, name: "查询对象😄"),
+              !ivarInfo.childs.isEmpty else {
+            return false
         }
+        
+        guard findProperty(from: ivarInfo, currentContainer: self) else {
+            return false
+        }
+        
+        print("------------ 👻 查询属性name 👻 ---------------")
         
         if let objc = container, let info = propertyInfo {
             let containClassName = info.containMirror?.kc_className ?? Mirror(reflecting: objc).kc_className
@@ -179,6 +164,41 @@ extension UIView {
         }
         
         print("------------ 👻 ivar description 👻 ---------------")
+        
+        return true
+    }
+}
+
+// MARK: - UIView
+
+@objc
+public extension UIView {
+    /// 查找UI的属性名
+    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
+    func kc_debug_findPropertyName() {
+        let _ = UIView.kc_debug_findObjcPropertyName(object: self, startSearchView: next)
+    }
+}
+
+extension UIView {
+    /// 查找objc的属性名
+    /// - Parameters:
+    ///   - object: 要查询的对象
+    ///   - startSearchView: 从这个view的properties开始查, 然后递归nextResponder
+    class func kc_debug_findObjcPropertyName(object: NSObject, startSearchView: UIResponder?) -> Bool {
+        var nextResponder: UIResponder? = startSearchView
+        
+        while let next = nextResponder {
+            defer {
+                nextResponder = nextResponder?.next
+            }
+            
+            if next.kc_debug_findObjcPropertyName(object: object) {
+                return true
+            }
+        }
+        
+        return false
     }
 }
 
@@ -523,6 +543,10 @@ public extension Mirror {
         guard let aClass = subjectType as? AnyClass else {
             return false
         }
+        return Mirror.kc_isCustomClass(aClass)
+    }
+    
+    static func kc_isCustomClass(_ aClass: AnyClass) -> Bool {
         let path = Bundle.init(for: aClass).bundlePath
         return path.hasPrefix(Bundle.main.bundlePath)
     }
