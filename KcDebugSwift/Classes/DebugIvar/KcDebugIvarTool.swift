@@ -655,6 +655,7 @@ public extension FindPropertyResult {
 // MARK: - KcPropertyModel
 
 @objc(KcPropertyModel)
+@objcMembers
 public class KcPropertyModel: NSObject {
     
     public let name: String // 属性name
