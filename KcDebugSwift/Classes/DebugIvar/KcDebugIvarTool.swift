@@ -67,7 +67,6 @@ public extension NSObject {
     }
     
     /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
-    /// <#Description#>
     /// - Parameters:
     ///   - container: 容器
     ///   - object: 要查找的对象
@@ -84,9 +83,22 @@ public extension UIView {
     /// 查找UI的属性名
     /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
     func kc_debug_findPropertyName() {
-        KcAnalyzePropertyTool.findResponderChainObjcPropertyName(object: self,
-                                                                 startSearchView: next,
-                                                                 isLog: true)
+        var findObjc: UIResponder? = self
+        
+        // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
+        while let objc = findObjc {
+            if KcAnalyzePropertyTool.findResponderChainObjcPropertyName(object: objc,
+                                                                     startSearchView: objc.next,
+                                                                     isLog: true) != nil {
+                if self !== objc {
+                    print("🐶🐶🐶 查询的是系统控件的子控件: \(self) ")
+                }
+                
+                return
+            }
+            
+            findObjc = objc.next
+        }
     }
 }
 
@@ -241,7 +253,7 @@ public extension KcAnalyzePropertyTool {
     ///   - isLog: 是否log
     /// - Returns: 查找到的信息 KcFindPropertyResult
     @discardableResult
-    class func findObjcPropertyName(containerObjc: Any, object: AnyObject, isLog: Bool = false) -> KcFindPropertyResult? {
+    class func findObjcPropertyName(containerObjc: Any, object: AnyObject, isLog: Bool = false) -> FindPropertyResult? {
         var container: Any?
         var propertyInfo: KcPropertyInfo?
         
@@ -296,7 +308,7 @@ public extension KcAnalyzePropertyTool {
             print("------------ 👻 ivar description 👻 ---------------")
         }
         
-        return KcFindPropertyResult(property: propertyInfo, container: container, object: object)
+        return FindPropertyResult(property: propertyInfo, container: container, object: object)
     }
     
     /// 查询对象的属性列表 properties
@@ -597,25 +609,25 @@ public extension Mirror {
     }
 }
 
-// MARK: - KcFindPropertyResult 查找的属性的结果
+// MARK: - FindPropertyResult 查找的属性的结果
 
 /// 查找的属性的结果
-public class KcFindPropertyResult {
+public class FindPropertyResult {
     /// 属性info
-    let property: KcPropertyInfo?
+    public let property: KcPropertyInfo?
     /// 属性所属容器
-    let container: Any?
+    public let container: Any?
     /// 属性
-    let object: AnyObject
+    public let object: AnyObject
     
-    init(property: KcPropertyInfo?, container: Any?, object: AnyObject) {
+    public init(property: KcPropertyInfo?, container: Any?, object: AnyObject) {
         self.property = property
         self.container = container
         self.object = object
     }
 }
 
-public extension KcFindPropertyResult {
+public extension FindPropertyResult {
     /// 容器的类名
     var containClassName: String {
         if let className = property?.containMirror?.kc_className {
