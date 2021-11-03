@@ -7,14 +7,17 @@
 //
 
 import UIKit
+import KcDebugSwift
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        view.hasAmbiguousLayout
+        view.addSubview(icon)
     }
+    
+    private lazy var icon = UIImageView()
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.tag = Int.random(in: 0...100)
