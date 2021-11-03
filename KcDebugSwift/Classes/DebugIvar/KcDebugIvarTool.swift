@@ -55,7 +55,7 @@ public extension NSObject {
                         return
                     } else {
                         if Mirror.kc_isCustomClass(type(of: nextLayer)),
-                           nextLayer.kc_debug_findObjcPropertyName(object: self) {
+                           NSObject.kc_debug_findPropertyName(container: nextLayer, object: self) {
                             return
                         }
                         
@@ -66,15 +66,15 @@ public extension NSObject {
         }
     }
     
-    /// 从当前对象, 查找objc的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
+    /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
+    /// <#Description#>
     /// - Parameters:
-    ///   - object: 要查询的对象
-    // expr -l objc++ -O -- [0x7f8738007690 kc_debug_findObjcPropertyNameWithObject:0x7f8738007690]
-    func kc_debug_findObjcPropertyName(object: NSObject) -> Bool {
-        return KcAnalyzePropertyTool.findObjcPropertyName(containerObjc: self, object: object, isLog: true) == nil ? false : true
+    ///   - container: 容器
+    ///   - object: 要查找的对象
+    /// - Returns: 是否找到
+    class func kc_debug_findPropertyName(container: Any, object: AnyObject) -> Bool {
+        return KcAnalyzePropertyTool.findObjcPropertyName(containerObjc: container, object: object, isLog: true) == nil ? false : true
     }
-    
-    class func 
 }
 
 // MARK: - UIView
@@ -241,12 +241,12 @@ public extension KcAnalyzePropertyTool {
     ///   - isLog: 是否log
     /// - Returns: 查找到的信息 KcFindPropertyResult
     @discardableResult
-    class func findObjcPropertyName(containerObjc: NSObject, object: NSObject, isLog: Bool = false) -> KcFindPropertyResult? {
-        var container: NSObject?
+    class func findObjcPropertyName(containerObjc: Any, object: AnyObject, isLog: Bool = false) -> KcFindPropertyResult? {
+        var container: Any?
         var propertyInfo: KcPropertyInfo?
         
         /// 查找property
-        func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: NSObject) -> Bool {
+        func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: Any) -> Bool {
             // 遍历当前容器的propertys
             for childInfo in ivarInfo.childs where childInfo.isEqual(objc: object) {
                 container = currentContainer
@@ -474,7 +474,7 @@ public extension KcPropertyInfo {
     }
     
     /// 判断是否相等, 有些情况也不知道如何处理⚠️
-    func isEqual(objc: NSObject) -> Bool {
+    func isEqual(objc: AnyObject) -> Bool {
         if objc.isEqual(value) {
             return true
         }
@@ -604,11 +604,11 @@ public class KcFindPropertyResult {
     /// 属性info
     let property: KcPropertyInfo?
     /// 属性所属容器
-    let container: NSObject?
+    let container: Any?
     /// 属性
     let object: AnyObject
     
-    init(property: KcPropertyInfo?, container: NSObject?, object: AnyObject) {
+    init(property: KcPropertyInfo?, container: Any?, object: AnyObject) {
         self.property = property
         self.container = container
         self.object = object
