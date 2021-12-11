@@ -14,18 +14,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(icon)
+        view.addSubview(btn)
+        
     }
     
-    private lazy var icon = UIImageView()
-
+    private var btn = UIButton()
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.tag = Int.random(in: 0...100)
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        navigationController?.pushViewController(AViewController(), animated: true)
     }
 
 }

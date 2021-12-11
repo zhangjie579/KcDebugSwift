@@ -66,6 +66,12 @@ public extension NSObject {
         }
     }
     
+    /// 为了能在runtime lldb使用
+    /// expr -l objc++ -O -- [NSObject kc_dumpSwift:0x7f8738007690]
+    class func kc_dumpSwift(_ value: Any) {
+        dump(value)
+    }
+    
     /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
     /// - Parameters:
     ///   - container: 容器
@@ -532,7 +538,7 @@ public extension KcPropertyInfo {
     }
 }
 
-private extension KcPropertyInfo {
+extension KcPropertyInfo {
     /// 格式化属性name
     static func propertyNameFormatter(_ name: String) -> String {
         var result = name
@@ -542,70 +548,6 @@ private extension KcPropertyInfo {
         }
         
         return result
-    }
-}
-
-// MARK: - Mirror 扩展
-
-public extension Mirror {
-    /// 对象是否为optional
-    var kc_isOptionalValue: Bool {
-        return displayStyle == .optional || _typeName(subjectType).hasPrefix("Swift.ImplicitlyUnwrappedOptional<")
-    }
-    
-    /// 去反射value的可选值的mirror: 当反射value为optional, 它为value去optional的mirror
-    func kc_filterOptionalReflectValue(_ value: Any) -> (Mirror, Any)? {
-        guard kc_isOptionalValue else {
-            return (self, value)
-        }
-        
-//        if let wapperValue = children.first?.value {
-//            return Mirror(reflecting: wapperValue).kc_filterOptionalReflectValue(wapperValue)
-//        }
-        for (key, value) in children where key == "some" {
-            return Mirror(reflecting: value).kc_filterOptionalReflectValue(value)
-        }
-        return nil
-    }
-    
-    /// 初始化, 过滤可选
-    static func kc_makeFilterOptional(reflecting: Any) -> (Mirror, Any)? {
-        let mirror = Mirror(reflecting: reflecting)
-        
-        return mirror.kc_filterOptionalReflectValue(reflecting)
-    }
-    
-    /// 获取类名
-    var kc_className: String {
-//        let name: String?
-//        if let object = object {
-//            name = "\(type(of: object))"
-//        } else if let ivar = ivar {
-//            name = "\(type(of: ivar))"
-//        } else {
-//            name = nil
-//        }
-        
-//        return "\(mirror.subjectType)"
-        
-        let type = _typeName(subjectType)
-            .replacingOccurrences(of: "__C.", with: "")
-            .replacingOccurrences(of: "Swift.", with: "")
-        
-        return type
-    }
-    
-    /// 是否是自定义class
-    var kc_isCustomClass: Bool {
-        guard let aClass = subjectType as? AnyClass else {
-            return false
-        }
-        return Mirror.kc_isCustomClass(aClass)
-    }
-    
-    static func kc_isCustomClass(_ aClass: AnyClass) -> Bool {
-        let path = Bundle.init(for: aClass).bundlePath
-        return path.hasPrefix(Bundle.main.bundlePath)
     }
 }
 

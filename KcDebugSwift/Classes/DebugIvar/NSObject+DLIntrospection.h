@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSObject (DLIntrospection)
 
 + (NSArray *)classes;
-+ (NSArray *)properties;
-+ (NSArray *)instanceVariables;
++ (nullable NSArray *)properties;
++ (nullable NSArray *)instanceVariables;
 + (NSArray *)classMethods;
 + (NSArray *)instanceMethods;
 
@@ -22,3 +24,5 @@
 
 + (NSString *)parentClassHierarchy;
 @end
+
+NS_ASSUME_NONNULL_END

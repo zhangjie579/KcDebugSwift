@@ -1,7 +1,13 @@
 PODS:
-  - KcDebugSwift (0.1.0):
-    - KcDebugSwift/DebugIvar (= 0.1.0)
-  - KcDebugSwift/DebugIvar (0.1.0)
+  - KcDebugSwift (0.0.5):
+    - KcDebugSwift/CircularReference (= 0.0.5)
+    - KcDebugSwift/DebugIvar (= 0.0.5)
+    - KcDebugSwift/Tool (= 0.0.5)
+  - KcDebugSwift/CircularReference (0.0.5):
+    - KcDebugSwift/DebugIvar
+    - KcDebugSwift/Tool
+  - KcDebugSwift/DebugIvar (0.0.5)
+  - KcDebugSwift/Tool (0.0.5)
 
 DEPENDENCIES:
   - KcDebugSwift (from `../`)
@@ -11,8 +17,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  KcDebugSwift: 9a757d9b62f71fa79f493dcaf06f9b1ccbd38145
+  KcDebugSwift: 9d3ae2a7705dbd794f54fea02342f8159228d741
 
 PODFILE CHECKSUM: ac88e5477d7f4d5acecb5e1719b40f1bbd8350f8
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2

@@ -105,6 +105,18 @@ public struct Mems<T> {
             }
             return UnsafeRawPointer(bitPattern: unsafeBitCast(v, to: (UInt, UInt).self).1)!
         } else {
+//            var kind = Kind(type: type(of: v))
+//            if kind == .opaque {
+//                let optionV: Any? = v
+//                if let wrapV = optionV {
+//                    kind = Kind(type: type(of: wrapV))
+//                    
+//                    if kind == .function {
+//                        
+//                    }
+//                }
+//            }
+            
             return _EMPTY_PTR
         }
     }
@@ -120,6 +132,7 @@ public struct Mems<T> {
     }
 }
 
+/// string内存类型
 public enum StringMemType : UInt8 {
     /// TEXT段（常量区）
     case text = 0xd0
@@ -181,3 +194,28 @@ public extension Memory {
         print("")
     }
 }
+
+//func contents(ptr: UnsafeRawPointer, _ length: Int) -> String {
+//    let wordPtr = ptr.bindMemory(to: UInt.self, capacity: 1)
+//    let words = length / MemoryLayout<UInt>.size // 按8字节分
+//    let wordChars = MemoryLayout<UInt>.size * 2
+//    let buffer = UnsafeBufferPointer<UInt>(start: wordPtr, count: words)
+//    let wordStrings = buffer.map({ word -> String in
+//        var wordString = String(word, radix: 16)
+//        while wordString.count < wordChars {
+//            wordString = "0" + wordString
+//        }
+//        return wordString
+//   })
+//   return wordStrings.joined(separator: " ")
+//}
+//
+//func dumperFunc(_ obj: AnyObject) -> () -> String {
+//    let objStr = "\(type(of: obj))"
+//    let ptr = unsafeBitCast(obj, to: UnsafeRawPointer.self)
+//    let length = class_getInstanceSize(type(of: obj))
+//    return {
+//        let bytes = contents(ptr: ptr, length)
+//        return "\(objStr) \(ptr): \(bytes)"
+//    }
+//}

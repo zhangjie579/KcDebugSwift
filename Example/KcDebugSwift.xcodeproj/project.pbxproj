@@ -14,6 +14,7 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		8EB18422C0DEFC6E884A173A /* Pods_KcDebugSwift_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46B7673613A8686CD3E2B9C9 /* Pods_KcDebugSwift_Tests.framework */; };
+		C11A1678275F5EFE00492FA1 /* AViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11A1677275F5EFE00492FA1 /* AViewController.swift */; };
 		CA2068442E2415D29DBD45A1 /* Pods_KcDebugSwift_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D6FF544DDF4A63FB0B8727 /* Pods_KcDebugSwift_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		62BA8A17AAE5119275A2ED24 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		7E4A9ACF9F5A0EC8E5E38587 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		8A4F6EBBA05B4A9258C55C02 /* Pods-KcDebugSwift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KcDebugSwift_Example.release.xcconfig"; path = "Target Support Files/Pods-KcDebugSwift_Example/Pods-KcDebugSwift_Example.release.xcconfig"; sourceTree = "<group>"; };
+		C11A1677275F5EFE00492FA1 /* AViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AViewController.swift; sourceTree = "<group>"; };
 		DD00A14B0849CBDCF4B27532 /* Pods-KcDebugSwift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KcDebugSwift_Example.debug.xcconfig"; path = "Target Support Files/Pods-KcDebugSwift_Example/Pods-KcDebugSwift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		E24B365C22BE28123736A2CF /* Pods-KcDebugSwift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KcDebugSwift_Tests.release.xcconfig"; path = "Target Support Files/Pods-KcDebugSwift_Tests/Pods-KcDebugSwift_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		FB80D457148EF42283C770BB /* KcDebugSwift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = KcDebugSwift.podspec; path = ../KcDebugSwift.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -104,6 +106,7 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				C11A1677275F5EFE00492FA1 /* AViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -332,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				C11A1678275F5EFE00492FA1 /* AViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

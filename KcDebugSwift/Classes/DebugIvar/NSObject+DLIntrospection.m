@@ -43,10 +43,13 @@
     
 //@TODO: do handle bitmasks
     NSString *result = [NSString stringWithCString:cString encoding:NSUTF8StringEncoding];
+    if (result.length <= 0) {
+        return result;
+    }
+    
     if ([[result substringToIndex:1] isEqualToString:@"@"] && [result rangeOfString:@"?"].location == NSNotFound) {
         result = [[result substringWithRange:NSMakeRange(2, result.length - 3)] stringByAppendingString:@"*"];
-    } else
-    if ([[result substringToIndex:1] isEqualToString:@"^"]) {
+    } else if ([[result substringToIndex:1] isEqualToString:@"^"]) {
         result = [NSString stringWithFormat:@"%@ *",
                    [NSString decodeType:[[result substringFromIndex:1] cStringUsingEncoding:NSUTF8StringEncoding]]];
     }
@@ -81,7 +84,7 @@ static void getSuper(Class class, NSMutableString *result) {
     return [self methodsForClass:[self class] typeFormat:@"-"];
 }
 
-+ (NSArray *)properties {
++ (nullable NSArray *)properties {
     unsigned int outCount;
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);
     NSMutableArray *result = [NSMutableArray array];
@@ -92,7 +95,7 @@ static void getSuper(Class class, NSMutableString *result) {
     return result.count ? [result copy] : nil;
 }
 
-+ (NSArray *)instanceVariables {
++ (nullable NSArray *)instanceVariables {
     unsigned int outCount;
     Ivar *ivars = class_copyIvarList([self class], &outCount);
     NSMutableArray *result = [NSMutableArray array];

@@ -48,6 +48,14 @@ TODO: Add long description of the pod here.
       d.frameworks = 'UIKit'
   end
   
+  # 查找循环引用
+  s.subspec 'CircularReference' do |ss|
+      ss.source_files = 'KcDebugSwift/Classes/CircularReference/**/*'
+      ss.dependency "KcDebugSwift/DebugIvar"
+      ss.dependency "KcDebugSwift/Tool"
+      ss.frameworks = 'UIKit'
+  end
+  
   s.subspec 'Tool' do |d|
       d.source_files = 'KcDebugSwift/Classes/Tool/**/*'
       d.frameworks = 'UIKit'
