@@ -20,7 +20,7 @@ static NSMutableDictionary<Class, NSArray<id<FBObjectReference>> *> *layoutCache
 #pragma mark - 打开关联对象的检测
 
 + (void)load {
-    [FBAssociationManager hook];
+//    [FBAssociationManager hook];
 }
 
 /// 查找

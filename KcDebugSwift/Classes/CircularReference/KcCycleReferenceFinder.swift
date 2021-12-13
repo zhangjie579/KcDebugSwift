@@ -3,7 +3,7 @@
 //  KcDebugSwift
 //
 //  Created by 张杰 on 2021/12/11.
-//
+//  查询循环引用
 
 import UIKit
 
@@ -304,6 +304,6 @@ private extension KcCycleReferenceFinder {
 @objc
 public extension NSString {
     var kc_formatterPropertyName: NSString {
-        return KcPropertyInfo.propertyNameFormatter(self as String) as NSString
+        return KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(self as String) as NSString
     }
 }

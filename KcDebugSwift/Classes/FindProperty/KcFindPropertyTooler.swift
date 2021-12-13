@@ -1,8 +1,8 @@
 //
-//  KcDebugIvarTool.swift
-//  swiftTest
+//  KcFindPropertyTool.swift
+//  KcDebugSwift
 //
-//  Created by 张杰 on 2021/4/18.
+//  Created by 张杰 on 2021/12/13.
 //  调试ivar工具, 可以在lldb环境下根据address使用
 
 import UIKit
@@ -34,7 +34,7 @@ public extension NSObject {
         /// 处理layer delegate情况, 默认情况下delegate为UIView
         func handleLayerDelegate(delegate: CALayerDelegate) -> Bool {
             if let responder = delegate as? UIResponder {
-                return KcAnalyzePropertyTool.findResponderChainObjcPropertyName(object: self, startSearchView: responder, isLog: true) == nil ? false : true
+                return KcFindPropertyTooler.findResponderChainObjcPropertyName(object: self, startSearchView: responder, isLog: true) == nil ? false : true
             } else { // 这种情况暂时不知道如何处理
                 print("------------ 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻 ---------------")
                 return false
@@ -78,7 +78,7 @@ public extension NSObject {
     ///   - object: 要查找的对象
     /// - Returns: 是否找到
     class func kc_debug_findPropertyName(container: Any, object: AnyObject) -> Bool {
-        return KcAnalyzePropertyTool.findObjcPropertyName(containerObjc: container, object: object, isLog: true) == nil ? false : true
+        return KcFindPropertyTooler.findObjcPropertyName(containerObjc: container, object: object, isLog: true) == nil ? false : true
     }
 }
 
@@ -93,7 +93,7 @@ public extension UIView {
         
         // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
         while let objc = findObjc {
-            if KcAnalyzePropertyTool.findResponderChainObjcPropertyName(object: objc,
+            if KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
                                                                      startSearchView: objc.next,
                                                                      isLog: true) != nil {
                 if self !== objc {
@@ -114,21 +114,21 @@ public extension UIView {
 public extension NSObject {
     /// 输出所有ivar
     /// expr -l objc++ -O -- [((NSObject *)0x7f8738007690) kc_debug_ivarDescription:0]
-    func kc_debug_ivarDescription(_ rawValue: KcAnalyzeIvarType = .default) {
+    func kc_debug_ivarDescription(_ rawValue: KcFindPropertyType = .default) {
         type(of: self).kc_debug_ivarDescription(self, rawValue: rawValue)
     }
     
     /// 输出UI相关的ivar
     // expr -l objc++ -O -- [((NSObject *)0x7f8738007690) kc_debug_UIIvarDescription:0]
-    func kc_debug_UIIvarDescription(_ rawValue: KcAnalyzeIvarType = .default) {
+    func kc_debug_UIIvarDescription(_ rawValue: KcFindPropertyType = .default) {
         type(of: self).kc_debug_UIIvarDescription(self, rawValue: rawValue)
     }
     
     /// 输出所有ivar
     /// expr -l objc++ -O -- [NSObject kc_debug_ivarDescription:0x7f8738007690 rawValue:0]
-    class func kc_debug_ivarDescription(_ value: Any, rawValue: KcAnalyzeIvarType = .default) {
+    class func kc_debug_ivarDescription(_ value: Any, rawValue: KcFindPropertyType = .default) {
         print("------------ 👻 ivar description 👻 ---------------")
-        let ivarTool = KcAnalyzePropertyTool.init(type: rawValue)
+        let ivarTool = KcFindPropertyTooler.init(type: rawValue)
         let ivarInfo = ivarTool.ivarsFromValue(value, depth: 0)
         ivarInfo?.log { _ in
             return true
@@ -138,9 +138,9 @@ public extension NSObject {
     
     /// 输出UI相关的ivar
     // expr -l objc++ -O -- [NSObject kc_debug_UIIvarDescription:0x7f8738007690 rawValue:0]
-    class func kc_debug_UIIvarDescription(_ value: Any, rawValue: KcAnalyzeIvarType = .default) {
+    class func kc_debug_UIIvarDescription(_ value: Any, rawValue: KcFindPropertyType = .default) {
         print("------------ 👻 UI ivar description 👻 ---------------")
-        let ivarTool = KcAnalyzePropertyTool.init(type: rawValue)
+        let ivarTool = KcFindPropertyTooler.init(type: rawValue)
         let ivarInfo = ivarTool.ivarsFromValue(value, depth: 0)
         ivarInfo?.log { info in
             guard let objc = info.value as? NSObject else {
@@ -158,10 +158,10 @@ public extension NSObject {
     }
 }
 
-// MARK: - KcAnalyzePropertyTool 分析属性工具
+// MARK: - KcFindPropertyTooler 分析属性工具
 
 @objc
-public enum KcAnalyzeIvarType : Int {
+public enum KcFindPropertyType : Int {
     case `default` = 0
     case hasSuper = 1
     case hasChild = 2
@@ -169,8 +169,8 @@ public enum KcAnalyzeIvarType : Int {
 }
 
 /// 分析ivar
-@objc(KcAnalyzePropertyTool)
-public class KcAnalyzePropertyTool: NSObject {
+@objc(KcFindPropertyTooler)
+public class KcFindPropertyTooler: NSObject {
     
     /// 最大处理深度(避免死循环, 当循环依赖时)
     let maxDepth: Int
@@ -185,7 +185,7 @@ public class KcAnalyzePropertyTool: NSObject {
         self.maxDepth = maxDepth
     }
     
-    public init(type: KcAnalyzeIvarType, maxDepth: Int = 5) {
+    public init(type: KcFindPropertyType, maxDepth: Int = 5) {
         switch type {
         case .default:
             self.isContainSuper = false
@@ -204,23 +204,28 @@ public class KcAnalyzePropertyTool: NSObject {
         self.maxDepth = maxDepth
     }
     
-    public static let `default` = KcAnalyzePropertyTool(isContainSuper: false, isContainChildInChild: false)
+    public static let `default` = KcFindPropertyTooler(isContainSuper: false, isContainChildInChild: false)
     
 }
 
-// MARK: - public
+// MARK: - public  oc外部可用
 
 @objc
-public extension KcAnalyzePropertyTool {
+public extension KcFindPropertyTooler {
     /// 查找objc的属性名, 通过响应链
     /// - Parameters:
     ///   - object: 要查询的对象
-    ///   - startSearchView: 从这个view的properties开始查, 然后递归nextResponder
+    ///   - startSearchView: 如果startSearchView为nil, 并且object为UIResponder, 从它的next开始, 然后递归nextResponder
     @discardableResult
     class func findResponderChainObjcPropertyName(object: NSObject,
                                                   startSearchView: UIResponder?,
-                                                  isLog: Bool = false) -> KcPropertyModel? {
+                                                  isLog: Bool = false) -> PropertyResult? {
         var nextResponder: UIResponder? = startSearchView
+        
+        // 如果startSearchView为nil, 并且object为UIResponder, 从它的next开始
+        if nextResponder == nil, let responder = object as? UIResponder {
+            nextResponder = responder.next
+        }
         
         while let next = nextResponder {
             defer {
@@ -228,10 +233,7 @@ public extension KcAnalyzePropertyTool {
             }
             
             if let result = findObjcPropertyName(containerObjc: next, object: object, isLog: isLog) {
-                return KcPropertyModel(name: result.propertyName,
-                                       address: result.address,
-                                       className: result.className,
-                                       containClassName: result.containClassName)
+                return result.propertyResult
             }
         }
         
@@ -239,19 +241,22 @@ public extension KcAnalyzePropertyTool {
     }
     
     /// 查找property info
+    /// - Parameters:
+    ///   - containerObjc: containerObjc从哪个对象开始查, 容器
+    ///   - object: object要查询的对象
+    /// - Returns: 返回查询到的结果
     @discardableResult
-    class func findPropertyInfo(containerObjc: NSObject, object: NSObject) -> KcPropertyModel? {
+    class func findPropertyInfo(containerObjc: NSObject, object: NSObject) -> PropertyResult? {
         guard let result = findObjcPropertyName(containerObjc: containerObjc, object: object) else {
             return nil
         }
-        return KcPropertyModel(name: result.propertyName,
-                               address: result.address,
-                               className: result.className,
-                               containClassName: result.containClassName)
+        return result.propertyResult
     }
 }
 
-public extension KcAnalyzePropertyTool {
+// MARK: - swift外部可用
+
+public extension KcFindPropertyTooler {
     /// 从当前对象, 查找objc的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
     /// - Parameters:
     ///   - containerObjc: 容器
@@ -259,12 +264,12 @@ public extension KcAnalyzePropertyTool {
     ///   - isLog: 是否log
     /// - Returns: 查找到的信息 KcFindPropertyResult
     @discardableResult
-    class func findObjcPropertyName(containerObjc: Any, object: AnyObject, isLog: Bool = false) -> FindPropertyResult? {
+    class func findObjcPropertyName(containerObjc: Any, object: AnyObject, isLog: Bool = false) -> Result? {
         var container: Any?
-        var propertyInfo: KcPropertyInfo?
+        var propertyInfo: PropertyInfo?
         
         /// 查找property
-        func findProperty(from ivarInfo: KcPropertyInfo, currentContainer: Any) -> Bool {
+        func findProperty(from ivarInfo: PropertyInfo, currentContainer: Any) -> Bool {
             // 遍历当前容器的propertys
             for childInfo in ivarInfo.childs where childInfo.isEqual(objc: object) {
                 container = currentContainer
@@ -284,7 +289,7 @@ public extension KcAnalyzePropertyTool {
             return false
         }
         
-        let ivarTool = KcAnalyzePropertyTool(type: .hasSuper)
+        let ivarTool = KcFindPropertyTooler(type: .hasSuper)
         
         let mirror = Mirror(reflecting: containerObjc)
         guard mirror.kc_isCustomClass,
@@ -314,7 +319,7 @@ public extension KcAnalyzePropertyTool {
             print("------------ 👻 ivar description 👻 ---------------")
         }
         
-        return FindPropertyResult(property: propertyInfo, container: container, object: object)
+        return Result(property: propertyInfo, container: container, object: object)
     }
     
     /// 查询对象的属性列表 properties
@@ -322,13 +327,13 @@ public extension KcAnalyzePropertyTool {
     ///   - value: 要查询的对象
     ///   - depth: 深度
     ///   - name: 查询对象的key
-    /// - Returns: KcPropertyInfo?
-    func ivarsFromValue(_ value: Any, depth: Int = 0, name: String = "顶层😄") -> KcPropertyInfo? {
+    /// - Returns: PropertyInfo?
+    func ivarsFromValue(_ value: Any, depth: Int = 0, name: String = "顶层😄") -> PropertyInfo? {
         guard let filterOptionalResult = Mirror.kc_makeFilterOptional(reflecting: value) else {
             return nil
         }
         
-        let ivarInfo = KcPropertyInfo(name: name,
+        let ivarInfo = PropertyInfo(name: name,
                                   value: filterOptionalResult.1,
                                   mirror: filterOptionalResult.0,
                                   depth: depth)
@@ -344,13 +349,13 @@ public extension KcAnalyzePropertyTool {
 
 // MARK: - private
 
-private extension KcAnalyzePropertyTool {
+private extension KcFindPropertyTooler {
     /// 当前对象的properties
     /// - Parameters:
     ///   - containerMirror: 当前对象
     ///   - ivarInfo: 当前对象info
     ///   - depth: 当前深度
-    func ivarsWithMirror(_ containerMirror: Mirror, ivarInfo: KcPropertyInfo, depth: Int = 0) {
+    func ivarsWithMirror(_ containerMirror: Mirror, ivarInfo: PropertyInfo, depth: Int = 0) {
         if depth > maxDepth { // 最多处理3层
             return
         }
@@ -361,7 +366,7 @@ private extension KcAnalyzePropertyTool {
             guard let childResult = Mirror.kc_makeFilterOptional(reflecting: childValue) else {
                 continue
             }
-            let childIvarInfo = KcPropertyInfo(name: label,
+            let childIvarInfo = PropertyInfo(name: label,
                                            value: childResult.1,
                                            mirror: childResult.0,
                                            containMirror: containerMirror,
@@ -379,14 +384,14 @@ private extension KcAnalyzePropertyTool {
     ///   - mirror: 当前对象
     ///   - ivarInfo: 当前对象的信息info (全部的super都是加到当前对象info, super的属性是加到自己)
     ///   - depth: 深度
-    func superIvarsWithMirror(_ mirror: Mirror, ivarInfo: KcPropertyInfo, depth: Int = 0) {
+    func superIvarsWithMirror(_ mirror: Mirror, ivarInfo: PropertyInfo, depth: Int = 0) {
         guard depth <= maxDepth,
               let superclassMirror = mirror.superclassMirror,
               shouldHandleMirror(superclassMirror) else {
             return
         }
         
-        let superIvarInfo = KcPropertyInfo(name: "super",
+        let superIvarInfo = PropertyInfo(name: "super",
                                        value: ivarInfo.value,
                                        mirror: superclassMirror,
                                        containMirror: ivarInfo.containMirror,
@@ -401,215 +406,6 @@ private extension KcAnalyzePropertyTool {
     /// 是否处理mirror (只处理自定义的)
     func shouldHandleMirror(_ mirror: Mirror) -> Bool {
         return mirror.kc_isCustomClass
-        
-//        guard let aClass = mirror.subjectType as? AnyClass else {
-//            return false
-//        }
-//        let path = Bundle.init(for: aClass).bundlePath
-//        return path.hasPrefix(Bundle.main.bundlePath)
-    }
-}
-
-// MARK: - KcPropertyInfo 属性信息
-
-public class KcPropertyInfo {
-    public let containMirror: Mirror? // 容器
-    
-    // --- 当前对象的
-    
-    public let name: String // 属性name
-    public let mirror: Mirror // 当前对象
-    public var value: Any?
-    public let address: String? // 地址
-    
-    public let depth: Int       // 深度 - 最多3层
-    
-    /// 当前对象继承的super层级 (super自己的属性, 在自己的childs中)
-    public var supers: [KcPropertyInfo] = []
-    /// 当前对象属性列表
-    public var childs: [KcPropertyInfo]
-    
-    public init(name: String,
-                value: Any?,
-                mirror: Mirror,
-                containMirror: Mirror? = nil,
-                depth: Int = 0,
-                childs: [KcPropertyInfo] = []) {
-        self.name = KcPropertyInfo.propertyNameFormatter(name)
-        self.mirror = mirror
-        self.containMirror = containMirror
-        self.depth = depth
-        self.childs = childs
-        self.value = value
-        
-        // address
-        if mirror.displayStyle == .class, let objc = value {
-            let point = Unmanaged.passUnretained(objc as AnyObject).toOpaque()
-//                let hashValue2 = withUnsafePointer(to: &value) { point in
-//                    return point.hashValue
-//                }
-            address = "\(point)"
-        } else {
-            address = nil
-        }
-    }
-}
-
-public extension KcPropertyInfo {
-    var className: String {
-        return mirror.kc_className
-    }
-    
-    /// 输出log
-    func log(filter: (KcPropertyInfo) -> Bool) {
-//        let spaceString = String.init(repeating: " ", count: (depth + 1) * 2)
-        
-        func recursionChilds(info: KcPropertyInfo) -> String {
-            var result = ""
-            
-            // 1.super
-            info.supers.forEach { info in
-                let supers = recursionChilds(info: info)
-                result.append(supers)
-            }
-            
-            // 2.当前
-            // depth = 0 为起点
-            if info.depth == 0 || filter(info) {
-                result += info.description + "\n"
-            }
-            
-            // 3.child
-            info.childs.forEach { info in
-                let childs = recursionChilds(info: info)
-                result.append(childs)
-            }
-            return result
-        }
-        
-        let description = recursionChilds(info: self)
-        print(description)
-    }
-    
-    /// 判断是否相等, 有些情况也不知道如何处理⚠️
-    func isEqual(objc: AnyObject) -> Bool {
-        if objc.isEqual(value) {
-            return true
-        }
-        
-        switch mirror.displayStyle {
-        case .collection:
-            if let array = value as? [AnyObject] {
-                return array.contains(where: { objc.isEqual($0) })
-            } else {
-                return false
-            }
-        case .dictionary:
-            if let dict = value as? [String : AnyObject] {
-                return dict.values.contains(where: { objc.isEqual($0) })
-            } else {
-                return false
-            }
-        case .set:
-            if let set = value as? Set<NSObject> {
-                return set.contains(where: { objc.isEqual($0) })
-            } else {
-                return false
-            }
-        case .tuple: // 不知道如何处理 - 不知道内存布局, 虽然跟struct布局一样
-            return false
-        default:
-            return false
-        }
-    }
-    
-    var description: String {
-        let value = self.value ?? ""
-        
-        if depth == 0 { // 顶层
-            return "in \(mirror.subjectType):"
-        }
-        let prefixString = String.init(repeating: "   | ", count: depth)
-        
-        let address = self.address == nil ? "" : " address: \(self.address ?? ""),"
-        let className = " className: \(self.className),"
-        
-        return "\(prefixString)name: \(name),\(address)\(className) 属性value: \(value)"
-    }
-}
-
-extension KcPropertyInfo {
-    /// 格式化属性name
-    static func propertyNameFormatter(_ name: String) -> String {
-        var result = name
-        // 1.懒加载的属性, name会以这个开头
-        if name.hasPrefix("$__lazy_storage_$_") {
-            result = String(name[name.index(name.startIndex, offsetBy: "$__lazy_storage_$_".count)...])
-        }
-        
-        return result
-    }
-}
-
-// MARK: - FindPropertyResult 查找的属性的结果
-
-/// 查找的属性的结果
-public class FindPropertyResult {
-    /// 属性info
-    public let property: KcPropertyInfo?
-    /// 属性所属容器
-    public let container: Any?
-    /// 属性
-    public let object: AnyObject
-    
-    public init(property: KcPropertyInfo?, container: Any?, object: AnyObject) {
-        self.property = property
-        self.container = container
-        self.object = object
-    }
-}
-
-public extension FindPropertyResult {
-    /// 容器的类名
-    var containClassName: String {
-        if let className = property?.containMirror?.kc_className {
-            return className
-        }
-        return container.map { Mirror(reflecting: $0) }?.kc_className ?? ""
-    }
-    
-    /// 属性名
-    var propertyName: String {
-        return property?.name ?? ""
-    }
-    
-    /// 属性地址
-    var address: String {
-        return "\(Unmanaged.passUnretained(object).toOpaque())"
-    }
-    
-    /// 属性名
-    var className: String {
-        return "\(type(of: object))"
-    }
-}
-
-// MARK: - KcPropertyModel
-
-@objc(KcPropertyModel)
-@objcMembers
-public class KcPropertyModel: NSObject {
-    
-    public let name: String // 属性name
-    public let address: String? // 地址
-    public let className: String // 属性类名
-    public let containClassName: String // 属性所属容器类名
-    
-    public init(name: String, address: String?, className: String, containClassName: String) {
-        self.name = name
-        self.address = address
-        self.className = className
-        self.containClassName = containClassName
     }
 }
 

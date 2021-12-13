@@ -3,7 +3,7 @@
 //  KcDebugSwift
 //
 //  Created by 张杰 on 2021/12/10.
-//
+//  反射
 
 import UIKit
 
@@ -61,11 +61,7 @@ public extension Mirror {
         var superMirror = superclassMirror
         
         var result = index
-        while superMirror != nil, let subjectType = superMirror?.subjectType {
-            if !Mirror.kc_isCustomClass(subjectType: subjectType) {
-                break
-            }
-            
+        while superMirror != nil {
             result += superMirror?.children.count ?? 0
             
             superMirror = superMirror?.superclassMirror
@@ -123,7 +119,7 @@ public extension Mirror {
             let point = withUnsafePointer(to: subjectType, { $0 })
             let value = UnsafeRawPointer(point).load(as: Int.self)
             
-            if value == 0 {
+            if value == 0 { // 会导致crash
                 return "Any"
             }
         }

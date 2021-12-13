@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'KcDebugSwift'
-  s.version          = '0.0.6'
+  s.version          = '0.0.7'
   s.summary          = 'A short description of KcDebugSwift.'
 
 # This description is used to generate tags and improve search results.
@@ -43,15 +43,16 @@ TODO: Add long description of the pod here.
   # s.dependency 'AFNetworking', '~> 2.3'
   
   # lldb调试成员变量ivar
-  s.subspec 'DebugIvar' do |d|
-      d.source_files = 'KcDebugSwift/Classes/DebugIvar/**/*'
+  s.subspec 'FindProperty' do |d|
+      d.source_files = 'KcDebugSwift/Classes/FindProperty/**/*'
+      d.dependency "KcDebugSwift/Tool"
       d.frameworks = 'UIKit'
   end
   
   # 查找循环引用
   s.subspec 'CircularReference' do |ss|
       ss.source_files = 'KcDebugSwift/Classes/CircularReference/**/*'
-      ss.dependency "KcDebugSwift/DebugIvar"
+      ss.dependency "KcDebugSwift/FindProperty"
       ss.dependency "KcDebugSwift/Tool"
       ss.dependency "KcDebugSwift/Associations"
       ss.frameworks = 'UIKit'

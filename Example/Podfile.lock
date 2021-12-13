@@ -1,18 +1,19 @@
 PODS:
   - fishhook (0.2)
-  - KcDebugSwift (0.0.5):
-    - KcDebugSwift/Associations (= 0.0.5)
-    - KcDebugSwift/CircularReference (= 0.0.5)
-    - KcDebugSwift/DebugIvar (= 0.0.5)
-    - KcDebugSwift/Tool (= 0.0.5)
-  - KcDebugSwift/Associations (0.0.5):
+  - KcDebugSwift (0.0.7):
+    - KcDebugSwift/Associations (= 0.0.7)
+    - KcDebugSwift/CircularReference (= 0.0.7)
+    - KcDebugSwift/FindProperty (= 0.0.7)
+    - KcDebugSwift/Tool (= 0.0.7)
+  - KcDebugSwift/Associations (0.0.7):
     - fishhook
-  - KcDebugSwift/CircularReference (0.0.5):
+  - KcDebugSwift/CircularReference (0.0.7):
     - KcDebugSwift/Associations
-    - KcDebugSwift/DebugIvar
+    - KcDebugSwift/FindProperty
     - KcDebugSwift/Tool
-  - KcDebugSwift/DebugIvar (0.0.5)
-  - KcDebugSwift/Tool (0.0.5)
+  - KcDebugSwift/FindProperty (0.0.7):
+    - KcDebugSwift/Tool
+  - KcDebugSwift/Tool (0.0.7)
 
 DEPENDENCIES:
   - KcDebugSwift (from `../`)
@@ -27,7 +28,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   fishhook: ea19933abfe8f2f52c55fd8b6e2718467d3ebc89
-  KcDebugSwift: 30992d6eef33564994efdeb2a44bf65d643f8389
+  KcDebugSwift: 326547fa969bb3a78b75d321bd2966db59096f77
 
 PODFILE CHECKSUM: a8ab156a6768f0137a79aadced5b42c34562a1e7
 
