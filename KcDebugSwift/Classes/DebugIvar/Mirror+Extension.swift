@@ -92,6 +92,11 @@ public extension Mirror {
         return path.hasPrefix(Bundle.main.bundlePath)
     }
     
+    /// 是否为NSObject 子类
+    static func kc_isNSObjectSubClass(classType: Any.Type) -> Bool {
+        return classType is NSObject.Type
+    }
+    
     /// 是否为class
     static func kc_isClass(value: Any) -> Bool {
         return kc_isClass(type: type(of: value))

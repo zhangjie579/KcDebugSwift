@@ -9,29 +9,6 @@
 import UIKit
 import KcDebugSwift
 
-@objc
-class Base: NSObject {
-    var params: [String: Any?]? = [:]
-}
-
-class Person: Base {
-//    var a1: [String] = ["a", "b"]
-//    var a2: Set<Int> = [1, 2]
-    
-//    var a3 = ["a": 1, "b": 2]
-    
-//    var a4: (String, Int) = ("haha", 12)
-//    var a5: (AnyObject?, Int)?
-    
-//    var a6 = [AnyObject?]()
-    
-//    var a7 = [String : AnyObject]()
-    
-//    var a8: (() -> Void)?
-    
-    weak var delegate: AnyObject?
-}
-
 struct FunctionPairTy {
     var FunctionPtrTy: UnsafeMutableRawPointer
 //    var RefCountedPtrTy: UnsafeMutablePointer<Box>
@@ -64,14 +41,6 @@ struct KcBlock {
 //    var block: () -> Void
 }
 
-//class KcBlock {
-//    var block: (() -> Void)?
-//
-//    init(block: (() -> Void)?) {
-//        self.block = block
-//    }
-//}
-
 func makeIncrementer() -> () -> Int {
     var runningTotal = 12
     func incrementer() -> Int {
@@ -81,40 +50,34 @@ func makeIncrementer() -> () -> Int {
     return incrementer
 }
 
-class AViewController: UIViewController {
+struct Haha {
+    
+    var a = 1
+    
+    var b = "dsfgssd"
+}
 
+var abcKeyAssoc: Void?
+
+class AViewController: UIViewController {
+    
+    private lazy var haha = Haha()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .lightGray
         
-        test1()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         
-        kc_finderCircularReference()
-        
-        print("")
     }
     
     func test1() {
-        var age = 23
-        
-        person.delegate = self
-//        person.a8 = { [weak self] in
-//            print(self?.view)
-//
-//        }
-        
-        
-//        person.a8 = { [weak self] in
-////            age += 1
-////            print(age, self.view)
-//            print(self)
-//        }
-        
         print(self)
         
-        
-        
+        var age = 23
         var strongSelf = self
         var printAge = {
 //            let temp = age
@@ -165,16 +128,9 @@ class AViewController: UIViewController {
     
     override func didMove(toParentViewController parent: UIViewController?) {
         super.didMove(toParentViewController: parent)
-        
-        if parent == nil {
-            let finder = CircleCycleFinder.init(reflecting: self)
-            finder.collection()
-        }
     }
     
     deinit {
         print("AViewController deinit")
     }
-
-    var person = Person()
 }

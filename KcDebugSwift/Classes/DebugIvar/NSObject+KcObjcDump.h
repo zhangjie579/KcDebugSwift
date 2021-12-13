@@ -47,14 +47,16 @@ NS_ASSUME_NONNULL_BEGIN
 // expr -l objc++ -O -- [0x7fea43513c50 kc_dump_allMethodDescription]
 // 如果address为对象: e -l objc -O -- [[0x7fb35dd09390 class] kc_dump_allMethodDescription]
 @interface NSObject (KcObjcDump)
+// (lldb) image lookup -rn NSObject\(IvarDescription\)
 
 // MAKR: - dump swift
 
+/// dump swift属性 e -l objc -O -- [NSObject kc_dump_swiftValue:0x00007ff653622a70]
 + (void)kc_dump_swiftValue:(id)objc;
 
 // MAKR: - dump objective-c
 
-/// 所有方法(包括层级)
+/// 所有方法(包括层级) 
 + (NSString *)kc_dump_allMethodDescription;
 /// 所有自定义方法
 + (NSString *)kc_dump_allCustomMethodDescription;

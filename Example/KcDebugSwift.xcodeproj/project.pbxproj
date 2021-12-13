@@ -273,10 +273,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-KcDebugSwift_Example/Pods-KcDebugSwift_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/KcDebugSwift/KcDebugSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/fishhook/fishhook.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KcDebugSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/fishhook.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

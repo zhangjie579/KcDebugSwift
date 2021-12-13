@@ -1,9 +1,14 @@
 PODS:
+  - fishhook (0.2)
   - KcDebugSwift (0.0.5):
+    - KcDebugSwift/Associations (= 0.0.5)
     - KcDebugSwift/CircularReference (= 0.0.5)
     - KcDebugSwift/DebugIvar (= 0.0.5)
     - KcDebugSwift/Tool (= 0.0.5)
+  - KcDebugSwift/Associations (0.0.5):
+    - fishhook
   - KcDebugSwift/CircularReference (0.0.5):
+    - KcDebugSwift/Associations
     - KcDebugSwift/DebugIvar
     - KcDebugSwift/Tool
   - KcDebugSwift/DebugIvar (0.0.5)
@@ -12,13 +17,18 @@ PODS:
 DEPENDENCIES:
   - KcDebugSwift (from `../`)
 
+SPEC REPOS:
+  trunk:
+    - fishhook
+
 EXTERNAL SOURCES:
   KcDebugSwift:
     :path: "../"
 
 SPEC CHECKSUMS:
-  KcDebugSwift: 9d3ae2a7705dbd794f54fea02342f8159228d741
+  fishhook: ea19933abfe8f2f52c55fd8b6e2718467d3ebc89
+  KcDebugSwift: 30992d6eef33564994efdeb2a44bf65d643f8389
 
-PODFILE CHECKSUM: ac88e5477d7f4d5acecb5e1719b40f1bbd8350f8
+PODFILE CHECKSUM: a8ab156a6768f0137a79aadced5b42c34562a1e7
 
 COCOAPODS: 1.10.2

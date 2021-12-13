@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'KcDebugSwift'
-  s.version          = '0.0.5'
+  s.version          = '0.0.6'
   s.summary          = 'A short description of KcDebugSwift.'
 
 # This description is used to generate tags and improve search results.
@@ -53,12 +53,20 @@ TODO: Add long description of the pod here.
       ss.source_files = 'KcDebugSwift/Classes/CircularReference/**/*'
       ss.dependency "KcDebugSwift/DebugIvar"
       ss.dependency "KcDebugSwift/Tool"
+      ss.dependency "KcDebugSwift/Associations"
       ss.frameworks = 'UIKit'
   end
   
   s.subspec 'Tool' do |d|
       d.source_files = 'KcDebugSwift/Classes/Tool/**/*'
       d.frameworks = 'UIKit'
+  end
+  
+  # hook关联对象
+  s.subspec 'Associations' do |ss|
+      ss.source_files = 'KcDebugSwift/Classes/Associations/**/*'
+      ss.dependency "fishhook"
+      ss.requires_arc = false # 需要mrc
   end
   
 end
