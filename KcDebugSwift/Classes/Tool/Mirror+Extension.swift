@@ -100,9 +100,16 @@ public extension Mirror {
     
     /// 是否为class
     static func kc_isClass(type: Any.Type) -> Bool {
-        return type is AnyClass
+        return _isClassType(type)
     }
     
+    /// 获取superclass(可用于swift对象)
+    /// 不是继承自NSObject的swift对象, 基类为_TtCs12_SwiftObject
+    static func kc_getSuperclass(_ obj: Any?) -> AnyClass? {
+        return class_getSuperclass(object_getClass(obj))
+    }
+    
+    /// 获取类型名, 有命名空间
     static func kc_className(subjectType: Any.Type) -> String {
 //        let name: String?
 //        if let object = object {
@@ -124,6 +131,8 @@ public extension Mirror {
             }
         }
         
+        // 比如: KcDebugSwift_Example.ViewController
+        // _mangledTypeName 这个方法返回的是没有解析好的
         let type = _typeName(subjectType)
             .replacingOccurrences(of: "__C.", with: "")
             .replacingOccurrences(of: "Swift.", with: "")
@@ -151,6 +160,26 @@ public extension Mirror {
     }
 }
 
+// MARK:
+
+public extension ObjectIdentifier {
+    /// 生成ObjectIdentifier
+    static func makeFromValue(_ value: Any) -> ObjectIdentifier? {
+        let id: ObjectIdentifier?
+        if type(of: value) is AnyObject.Type {
+            // Object is a class (but not an ObjC-bridged struct)
+            id = ObjectIdentifier(value as AnyObject)
+        } else if let metatypeInstance = value as? Any.Type {
+            // Object is a metatype
+            id = ObjectIdentifier(metatypeInstance)
+        } else {
+            id = nil
+        }
+        
+        return id
+    }
+}
+
 // MARK: - 苹果API
 
 // https://github1s.com/apple/swift/blob/HEAD/stdlib/public/runtime/ReflectionMirror.cpp#L158
@@ -165,6 +194,24 @@ struct _FieldReflectionMetadata {
 }
 
 /// 获取属性的元数据
+/* 可以看出 index 会处理 super mirror的情况, so要加上
+ const FieldType recursiveChildMetadata(intptr_t i,
+                                        const char **outName,
+                                        void (**outFreeFunc)(const char *)) override {
+   if (hasSuperclassMirror()) {
+     auto superMirror = superclassMirror();
+     auto superclassFieldCount = superMirror.recursiveCount();
+
+     if (i < superclassFieldCount) {
+       return superMirror.recursiveChildMetadata(i, outName, outFreeFunc);
+     } else {
+       i -= superclassFieldCount;
+     }
+   }
+
+   return childMetadata(i, outName, outFreeFunc);
+ }
+ */
 @_silgen_name("swift_reflectionMirror_recursiveChildMetadata")
 internal func _getChildMetadata(
   _: Any.Type,
@@ -172,5 +219,83 @@ internal func _getChildMetadata(
   fieldMetadata: UnsafeMutablePointer<_FieldReflectionMetadata>
 ) -> Any.Type
 
+/// 是否是class
 @_silgen_name("swift_isClassType")
 internal func _isClassType(_: Any.Type) -> Bool
+
+
+/// 获取枚举的case
+@_silgen_name("swift_EnumCaseName")
+internal func _getEnumCaseName<T>(_ value: T) -> UnsafePointer<CChar>?
+
+@_silgen_name("swift_getMetadataKind")
+internal func _metadataKind(_: Any.Type) -> UInt
+
+@_silgen_name("_swift_isClassOrObjCExistentialType")
+internal func _swift_isClassOrObjCExistentialType<T>(_ x: T.Type) -> Bool
+
+///// 获取swift class的superclass
+//@_silgen_name("_swift_class_getSuperclass")
+//internal func _swift_class_getSuperclass(_ t: AnyClass) -> AnyClass?
+
+/// 收集value的所有引用类型对象
+internal func _collectAllReferencesInsideObjectImpl(_ value: Any,
+                                                    references: inout [UnsafeRawPointer],
+                                                    visitedItems: inout [ObjectIdentifier: Int]) {
+  // Use the structural reflection and ignore any
+  // custom reflectable overrides.
+  let mirror = Mirror(reflecting: value)
+
+  let id: ObjectIdentifier?
+  let ref: UnsafeRawPointer?
+  if type(of: value) is AnyObject.Type {
+    // Object is a class (but not an ObjC-bridged struct)
+    let toAnyObject = value as AnyObject
+    ref = UnsafeRawPointer(Unmanaged.passUnretained(toAnyObject).toOpaque())
+    id = ObjectIdentifier(toAnyObject)
+  }
+//  else if type(of: value) is Builtin.BridgeObject.Type {
+//    ref = UnsafeRawPointer(
+//      Builtin.bridgeToRawPointer(value as! Builtin.BridgeObject))
+//    id = nil
+//  } else if type(of: value) is Builtin.NativeObject.Type  {
+//    ref = UnsafeRawPointer(
+//      Builtin.bridgeToRawPointer(value as! Builtin.NativeObject))
+//    id = nil
+//  }
+  else if let metatypeInstance = value as? Any.Type {
+    // Object is a metatype
+    id = ObjectIdentifier(metatypeInstance)
+    ref = nil
+  } else {
+    id = nil
+    ref = nil
+  }
+
+  if let theId = id {
+    // Bail if this object was seen already.
+    if visitedItems[theId] != nil {
+      return
+    }
+    // Remember that this object was seen already.
+    let identifier = visitedItems.count
+    visitedItems[theId] = identifier
+  }
+
+  // If it is a reference, add it to the result.
+  if let ref = ref {
+    references.append(ref)
+  }
+
+  // Recursively visit the children of the current value.
+  let count = mirror.children.count
+  var currentIndex = mirror.children.startIndex
+  for _ in 0..<count {
+    let (_, child) = mirror.children[currentIndex]
+    mirror.children.formIndex(after: &currentIndex)
+    _collectAllReferencesInsideObjectImpl(
+      child,
+      references: &references,
+      visitedItems: &visitedItems)
+  }
+}

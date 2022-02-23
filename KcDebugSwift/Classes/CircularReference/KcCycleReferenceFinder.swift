@@ -168,6 +168,7 @@ extension KcCycleReferenceFinder {
     }
     
     /// 查找swift
+    /// 可以通过class_copyIvarList获取到, but ivar_getTypeEncoding = ""
     func findSwiftStrongReference(mirror: Mirror, property: KcReferencePropertyInfo, depth: Int) -> [String]? {
         if depth > maxDepth {
             return nil

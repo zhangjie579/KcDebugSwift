@@ -20,7 +20,7 @@
 
 #import "FBAssociationManager+Internal.h"
 
-#import "fishhook.h"
+#import <fishhook/fishhook.h>
 
 #define _INTERNAL_RCD_ENABLED 1
 

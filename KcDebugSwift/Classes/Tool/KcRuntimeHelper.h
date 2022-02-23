@@ -11,7 +11,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KcRuntimeHelper : NSObject
 
-+ (NSArray<Class> *)objcClassList;
++ (void)updateRegisteredClasses;
+
+/// 更新黑名单的类
++ (void)updateBlackClass;
+
++ (BOOL)isBlackClassWithObjc:(id)objc;
+
+/// 是否是黑名单class
++ (BOOL)isBlackClass:(Class)cls;
 
 @end
 
