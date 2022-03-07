@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// 查询循环引用
 @objc(KcCycleReferenceFinder)
 @objcMembers
 public class KcCycleReferenceFinder: NSObject {
@@ -99,6 +100,8 @@ public extension KcCycleReferenceFinder {
 public extension NSObject {
     
     /// 查找循环引用
+    /// 原理: 根据属性查询引用环
+    /// 存在问题: 由于closure闭包的内存布局暂无找到源码, 不好做分析, 只处理了property的情况, 暂未处理闭包⚠️
     /// expr -l objc++ -O -- [0x7f8738007690 kc_finderCycleReferenceWithMaxDepth:10]
     @discardableResult
     func kc_finderCycleReference(maxDepth: Int = 10) -> [String] {
@@ -117,9 +120,10 @@ extension KcCycleReferenceFinder {
         var result = [String]()
         
         // 处理objc的ivar
-        let resultKeyPath = objcCycleReference.startFindStrongReference(withProperty: property, depth: depth)
-        if (resultKeyPath?.count ?? 0) > 0 {
-            resultKeyPath?.forEach { element in
+        if let resultKeyPath = objcCycleReference.startFindStrongReference(withProperty: property,
+                                                                           depth: depth),
+           resultKeyPath.count > 0 {
+            resultKeyPath.forEach { element in
                 if let path = element as? String {
                     result.append(path)
                 }
@@ -221,9 +225,11 @@ extension KcCycleReferenceFinder {
 //                            continue
 //                        }
                     break
+                case .struct:
+                    break
                 case .collection, .dictionary, .set, .tuple, .optional:
                     break
-                case .struct, .enum: // 结构体、枚举不处理
+                case .enum: // 枚举不处理
                     continue
                 @unknown default:
                     break

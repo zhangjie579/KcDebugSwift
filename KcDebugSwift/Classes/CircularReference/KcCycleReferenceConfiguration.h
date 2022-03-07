@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// 配置
 @interface KcCycleReferenceConfiguration : NSObject
 
 /// 过滤class name

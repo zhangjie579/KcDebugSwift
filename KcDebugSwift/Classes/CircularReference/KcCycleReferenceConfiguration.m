@@ -109,6 +109,7 @@
     return _excludeClasses;
 }
 
+/// 过滤类名
 - (NSMutableSet<NSString *> *)excludeClassNames {
     if (!_excludeClassNames) {
         _excludeClassNames = [[NSMutableSet alloc] initWithArray:@[
@@ -130,6 +131,7 @@
     return _excludeClassNames;
 }
 
+/// 过滤类的前缀
 - (NSMutableSet<NSString *> *)excludeClassPrefixName {
     if (!_excludeClassPrefixName) {
         _excludeClassPrefixName = [[NSMutableSet alloc] initWithArray:@[
