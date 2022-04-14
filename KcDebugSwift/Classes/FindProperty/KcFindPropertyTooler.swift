@@ -29,41 +29,51 @@ public extension NSObject {
      查不到的情况
      1. delegate设置为不是UIResponder对象, 或者它不在图层树上
      */
-    func kc_debug_findUIPropertyName() {
+    @discardableResult
+    func kc_debug_findUIPropertyName() -> String {
         
         /// 处理layer delegate情况, 默认情况下delegate为UIView
-        func handleLayerDelegate(delegate: CALayerDelegate) -> Bool {
+        func handleLayerDelegate(delegate: CALayerDelegate) -> KcFindPropertyTooler.PropertyResult? {
             if let responder = delegate as? UIResponder {
-                return KcFindPropertyTooler.findResponderChainObjcPropertyName(object: self, startSearchView: responder, isLog: true) == nil ? false : true
+                return KcFindPropertyTooler.findResponderChainObjcPropertyName(object: self, startSearchView: responder, isLog: true)
             } else { // 这种情况暂时不知道如何处理
-                print("------------ 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻 ---------------")
-                return false
+                // 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻
+                return nil
             }
+        }
+        
+        /// 递归图层layer
+        func recursSuperLayer(layer: CALayer) -> String {
+            var superlayer = layer.superlayer
+            
+            while let nextLayer = superlayer {
+                if let delegate = nextLayer.delegate,
+                   let result = handleLayerDelegate(delegate: delegate) {
+                    return result.debugLog
+                } else {
+                    if Mirror.kc_isCustomClass(type(of: nextLayer)),
+                       let result = NSObject.kc_debug_findPropertyName(container: nextLayer, object: self) {
+                        return result.debugLog
+                    }
+                    
+                    superlayer = superlayer?.superlayer
+                }
+            }
+            
+            return "😭😭😭 未找到"
         }
         
         if isKind(of: UIView.self) {
-            (self as? UIView)?.kc_debug_findPropertyName()
+            return (self as? UIView)?.kc_debug_findPropertyName() ?? "😭😭😭 未找到"
         } else if isKind(of: CALayer.self), let layer = self as? CALayer {
-            if let delegate = layer.delegate, handleLayerDelegate(delegate: delegate) {
-                return
+            if let delegate = layer.delegate, let result = handleLayerDelegate(delegate: delegate) {
+                return result.debugLog
             } else { // 没有代理
-                var superlayer = layer.superlayer
-                
-                while let nextLayer = superlayer {
-                    if let delegate = nextLayer.delegate,
-                       handleLayerDelegate(delegate: delegate) {
-                        return
-                    } else {
-                        if Mirror.kc_isCustomClass(type(of: nextLayer)),
-                           NSObject.kc_debug_findPropertyName(container: nextLayer, object: self) {
-                            return
-                        }
-                        
-                        superlayer = superlayer?.superlayer
-                    }
-                }
+                return recursSuperLayer(layer: layer)
             }
         }
+        
+        return "😭😭😭 未找到"
     }
     
     /// 为了能在runtime lldb使用
@@ -72,13 +82,18 @@ public extension NSObject {
         dump(value)
     }
     
+    /// expr -l objc++ -O -- [0x7f8738007690 kc_dumpSwift]
+    func kc_dumpSwift() {
+        dump(self)
+    }
+    
     /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
     /// - Parameters:
     ///   - container: 容器
     ///   - object: 要查找的对象
     /// - Returns: 是否找到
-    class func kc_debug_findPropertyName(container: Any, object: AnyObject) -> Bool {
-        return KcFindPropertyTooler.findObjcPropertyName(containerObjc: container, object: object, isLog: true) == nil ? false : true
+    class func kc_debug_findPropertyName(container: Any, object: AnyObject) -> KcFindPropertyTooler.PropertyResult? {
+        return KcFindPropertyTooler.findObjcPropertyName(containerObjc: container, object: object, isLog: true)?.propertyResult
     }
 }
 
@@ -88,23 +103,26 @@ public extension NSObject {
 public extension UIView {
     /// 查找UI的属性名
     /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
-    func kc_debug_findPropertyName() {
+    @discardableResult
+    func kc_debug_findPropertyName() -> String {
         var findObjc: UIResponder? = self
         
         // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
         while let objc = findObjc {
-            if KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
+            if let result = KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
                                                                      startSearchView: objc.next,
-                                                                     isLog: true) != nil {
+                                                                     isLog: true) {
                 if self !== objc {
-                    print("🐶🐶🐶 查询的是系统控件的子控件: \(self) ")
+                    return "🐶🐶🐶 查询的是系统控件的子控件: \(self) "
+                } else {
+                    return result.debugLog
                 }
-                
-                return
             }
             
             findObjc = objc.next
         }
+        
+        return "😭😭😭 未找到"
     }
 }
 

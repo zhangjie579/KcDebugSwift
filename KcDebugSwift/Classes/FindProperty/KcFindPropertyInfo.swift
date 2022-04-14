@@ -194,7 +194,7 @@ public extension KcFindPropertyTooler.Result {
         return "\(Unmanaged.passUnretained(object).toOpaque())"
     }
     
-    /// 属性名
+    /// 属性类名
     var className: String {
         return "\(type(of: object))"
     }
@@ -206,7 +206,8 @@ extension KcFindPropertyTooler.Result {
         return .init(name: propertyName,
                      address: address,
                      className: className,
-                     containClassName: containClassName)
+                     containClassName: containClassName,
+                     containAddress: Unmanaged.passUnretained(container as AnyObject).toOpaque())
     }
 }
 
@@ -219,15 +220,21 @@ public extension KcFindPropertyTooler {
     class PropertyResult: NSObject {
         
         public let name: String // 属性name
-        public let address: String? // 地址
+        public let address: String? // 属性地址
         public let className: String // 属性类名
         public let containClassName: String // 属性所属容器类名
+        public let containAddress: UnsafeMutableRawPointer // 容器地址
         
-        public init(name: String, address: String?, className: String, containClassName: String) {
+        public init(name: String, address: String?, className: String, containClassName: String, containAddress: UnsafeMutableRawPointer) {
             self.name = name
             self.address = address
             self.className = className
             self.containClassName = containClassName
+            self.containAddress = containAddress
+        }
+        
+        public var debugLog: String {
+            return "容器类名: <\(containClassName): \(containAddress)>, 属性name: \(name)"
         }
     }
 }

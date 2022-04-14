@@ -18,7 +18,9 @@ class ViewController: UIViewController {
         
     }
     
-    private var btn = UIButton()
+    private var block: (() -> Void)?
+    
+    private lazy var btn = UIButton()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         navigationController?.pushViewController(AViewController(), animated: true)
