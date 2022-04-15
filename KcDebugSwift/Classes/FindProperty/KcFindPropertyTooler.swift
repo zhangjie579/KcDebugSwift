@@ -83,8 +83,8 @@ public extension NSObject {
     }
     
     /// expr -l objc++ -O -- [0x7f8738007690 kc_dumpSwift]
-    func kc_dumpSwift() {
-        dump(self)
+    func kc_dumpSwift() -> Any {
+        return dump(self)
     }
     
     /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
