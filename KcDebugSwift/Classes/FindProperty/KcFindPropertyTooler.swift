@@ -124,6 +124,28 @@ public extension UIView {
         
         return "😭😭😭 未找到"
     }
+    
+    /// 查找UI的属性名
+    func kc_debug_findPropertyNameResult() -> KcFindPropertyTooler.PropertyResult? {
+        var findObjc: UIResponder? = self
+        
+        // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
+        while let objc = findObjc {
+            if let result = KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
+                                                                     startSearchView: objc.next,
+                                                                     isLog: true) {
+                if self !== objc {
+                    return nil
+                } else {
+                    return result
+                }
+            }
+            
+            findObjc = objc.next
+        }
+        
+        return nil
+    }
 }
 
 // MARK: - 方案2: log出容器的all property info, 然后自己根据address, 去检索

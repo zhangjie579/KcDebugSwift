@@ -28,7 +28,7 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/zhangjie579/KcDebugSwift.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
   # swifty版本号
   s.swift_version = "5.0"
 
@@ -68,6 +68,13 @@ TODO: Add long description of the pod here.
       ss.source_files = 'KcDebugSwift/Classes/Associations/**/*'
       ss.dependency "fishhook"
       ss.requires_arc = false # 需要mrc
+  end
+  
+  # UI属性
+  s.subspec 'UIProperty' do |ss|
+      ss.source_files = 'KcDebugSwift/Classes/UIProperty/**/*'
+      ss.dependency "KcDebugSwift/FindProperty"
+      ss.frameworks = 'UIKit'
   end
   
 end
