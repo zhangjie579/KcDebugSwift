@@ -50,31 +50,37 @@ TODO: Add long description of the pod here.
   end
   
   # 查找循环引用
-  s.subspec 'CircularReference' do |ss|
-      ss.source_files = 'KcDebugSwift/Classes/CircularReference/**/*'
-      ss.dependency "KcDebugSwift/FindProperty"
-      ss.dependency "KcDebugSwift/Tool"
-      ss.dependency "KcDebugSwift/Associations"
-      ss.frameworks = 'UIKit'
-  end
+#  s.subspec 'CircularReference' do |ss|
+#      ss.source_files = 'KcDebugSwift/Classes/CircularReference/**/*'
+#      ss.dependency "KcDebugSwift/FindProperty"
+#      ss.dependency "KcDebugSwift/Tool"
+#      ss.dependency "KcDebugSwift/Associations"
+#      ss.frameworks = 'UIKit'
+#  end
   
   s.subspec 'Tool' do |d|
       d.source_files = 'KcDebugSwift/Classes/Tool/**/*'
       d.frameworks = 'UIKit'
+      d.dependency "KcDebugSwift/MRC"
   end
   
   # hook关联对象
-  s.subspec 'Associations' do |ss|
-      ss.source_files = 'KcDebugSwift/Classes/Associations/**/*'
-      ss.dependency "fishhook"
-      ss.requires_arc = false # 需要mrc
-  end
+#  s.subspec 'Associations' do |ss|
+#      ss.source_files = 'KcDebugSwift/Classes/Associations/**/*'
+#      ss.dependency "fishhook"
+#      ss.requires_arc = false # 需要mrc
+#  end
   
   # UI属性
   s.subspec 'UIProperty' do |ss|
       ss.source_files = 'KcDebugSwift/Classes/UIProperty/**/*'
       ss.dependency "KcDebugSwift/FindProperty"
       ss.frameworks = 'UIKit'
+  end
+  
+  s.subspec 'MRC' do |ss|
+      ss.requires_arc = false # 默认为MRC
+      ss.source_files = 'KcDebugSwift/Classes/MRC/**/*'
   end
   
 end

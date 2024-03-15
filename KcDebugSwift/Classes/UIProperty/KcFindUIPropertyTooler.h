@@ -35,12 +35,23 @@ typedef NS_ENUM(NSUInteger, KcFindUIPropertyType) {
 /// 查找图层树下某个属性有多少个子树设置
 + (NSArray<KcFindUIPropertyModel *> *)matchSubviewsFromRootView:(UIView *)rootView propertyType:(KcFindUIPropertyType)propertyType;
 
+/// 查找图层树下某个属性有多少个子树设置
++ (NSArray<KcFindUIPropertyModel *> *)matchSubviewsFromRootView:(UIView *)rootView propertyName:(NSString *)propertyName;
+
 @end
 
 @interface UIView (KcFindUIProperty)
 
 /// 查找图层树下某个属性有多少个子树设置
+/// e -l objc++ -O -- [0x7fea43513c50 matchSubviewsWithPropertyType:1]
 - (NSString *)matchSubviewsWithPropertyType:(KcFindUIPropertyType)propertyType;
+
+/// 查找图层树下某个属性有多少个子树设置
+/// e -l objc++ -O -- [0x7fea43513c50 matchSubviewsWithPropertyName:@"image"]
+- (NSString *)matchSubviewsWithPropertyName:(NSString *)propertyName;
+
+
+- (NSString *)matchSuperviewsWithPropertyName:(NSString *)propertyName;
 
 @end
 

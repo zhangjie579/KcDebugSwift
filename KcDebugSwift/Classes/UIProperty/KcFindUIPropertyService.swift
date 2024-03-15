@@ -67,3 +67,30 @@ public class KcFindUICornerRadiusProperty: NSObject, KcFindUIPropertyService {
         return "cornerRadius: \(view.layer.cornerRadius), clipsToBounds: \(view.clipsToBounds), masksToBounds: \(view.layer.masksToBounds)"
     }
 }
+
+// MARK: - KcFindUIPropertyName 圆角
+
+@objc(KcFindUIPropertyName)
+public class KcFindUIPropertyName: NSObject, KcFindUIPropertyService {
+    
+    private let propertyName: String
+    
+    @objc public init(propertyName: String) {
+        self.propertyName = propertyName
+        super.init()
+    }
+    
+    public func matchProperty(view: UIView) -> Bool {
+        if propertyName.contains(".") { // keyPath - 不判断
+            return view.value(forKeyPath: propertyName) != nil
+        } else {
+            return view.responds(to: NSSelectorFromString(propertyName))
+        }
+    }
+    
+    public func propertyDescription(view: UIView) -> String {
+//        let value = view.value(forKeyPath: propertyName)
+        
+        return "\(propertyName): \(view.value(forKeyPath: propertyName) ?? "None")"
+    }
+}

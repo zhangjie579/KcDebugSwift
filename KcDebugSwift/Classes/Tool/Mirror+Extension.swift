@@ -184,6 +184,7 @@ public extension ObjectIdentifier {
 
 // https://github1s.com/apple/swift/blob/HEAD/stdlib/public/runtime/ReflectionMirror.cpp#L158
 
+/// 引用关系
 struct _FieldReflectionMetadata {
     typealias NameFreeFunc = @convention(c) (UnsafePointer<CChar>?) -> Void
     

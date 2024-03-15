@@ -1,38 +1,27 @@
 PODS:
-  - fishhook (0.2)
-  - KcDebugSwift (0.1.0):
-    - KcDebugSwift/Associations (= 0.1.0)
-    - KcDebugSwift/CircularReference (= 0.1.0)
-    - KcDebugSwift/FindProperty (= 0.1.0)
-    - KcDebugSwift/Tool (= 0.1.0)
-    - KcDebugSwift/UIProperty (= 0.1.0)
-  - KcDebugSwift/Associations (0.1.0):
-    - fishhook
-  - KcDebugSwift/CircularReference (0.1.0):
-    - KcDebugSwift/Associations
-    - KcDebugSwift/FindProperty
+  - KcDebugSwift (0.1.1):
+    - KcDebugSwift/FindProperty (= 0.1.1)
+    - KcDebugSwift/MRC (= 0.1.1)
+    - KcDebugSwift/Tool (= 0.1.1)
+    - KcDebugSwift/UIProperty (= 0.1.1)
+  - KcDebugSwift/FindProperty (0.1.1):
     - KcDebugSwift/Tool
-  - KcDebugSwift/FindProperty (0.1.0):
-    - KcDebugSwift/Tool
-  - KcDebugSwift/Tool (0.1.0)
-  - KcDebugSwift/UIProperty (0.1.0):
+  - KcDebugSwift/MRC (0.1.1)
+  - KcDebugSwift/Tool (0.1.1):
+    - KcDebugSwift/MRC
+  - KcDebugSwift/UIProperty (0.1.1):
     - KcDebugSwift/FindProperty
 
 DEPENDENCIES:
   - KcDebugSwift (from `../`)
-
-SPEC REPOS:
-  trunk:
-    - fishhook
 
 EXTERNAL SOURCES:
   KcDebugSwift:
     :path: "../"
 
 SPEC CHECKSUMS:
-  fishhook: ea19933abfe8f2f52c55fd8b6e2718467d3ebc89
-  KcDebugSwift: 777c04bf08878bfabdc004af1f7a7d586a7329de
+  KcDebugSwift: 2322610c97a9ddb3ac2d685b3d17824f749ff0f4
 
-PODFILE CHECKSUM: 82503b71865f0034687954089a50901e132f0b08
+PODFILE CHECKSUM: bb708afe3e425d64bcb52c127384743d4312fb69
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.13.0
