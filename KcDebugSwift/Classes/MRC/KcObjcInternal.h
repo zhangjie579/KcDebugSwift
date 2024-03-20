@@ -63,11 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 //bool isObjcObject(const void *inPtr, const Class *allClasses, int classCount);
 //static bool isObjcObject(const void *inPtr, const Class *allClasses, int classCount)
 
-BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses);
+BOOL kc_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses);
 
 
 /// Accepts addresses that may or may not be readable.
 /// https://blog.timac.org/2016/1124-testing-if-an-arbitrary-pointer-is-a-valid-objective-c-object/
-bool zp_isValidReadableMemory(const void* inPtr);
+bool kc_isValidReadableMemory(const void* inPtr);
 
 NS_ASSUME_NONNULL_END

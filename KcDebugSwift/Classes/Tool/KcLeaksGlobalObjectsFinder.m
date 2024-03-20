@@ -140,7 +140,7 @@ static CFMutableSetRef global_registeredClasses;
                         }
                         
                         // 判断pointee指向的内容是否为OC的NSObject对象
-                        if (zp_isObjcObject((void *)pointee, global_registeredClasses)) {
+                        if (kc_isObjcObject((void *)pointee, global_registeredClasses)) {
                             // 这里其实可以不用存NSObject, 存address到时候对比address就可以了
 //                            NSObject *objc = (NSObject *)pointee;
 //                            [objectArray addObject:(__bridge NSObject *)((void *)pointee)];

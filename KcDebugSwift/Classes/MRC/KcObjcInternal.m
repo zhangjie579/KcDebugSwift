@@ -19,14 +19,14 @@
 ////////////////////////////////////////////////
 // originally objc_object::isExtTaggedPointer //
 ////////////////////////////////////////////////
-static inline BOOL zp_objc_isExtTaggedPointer(const void *ptr)  {
+static inline BOOL kc_objc_isExtTaggedPointer(const void *ptr)  {
     return ((uintptr_t)ptr & ZP_OBJC_TAG_EXT_MASK) == ZP_OBJC_TAG_EXT_MASK;
 }
 
 //////////////////////////////////////
 // originally _objc_isTaggedPointer //
 //////////////////////////////////////
-static inline BOOL zp_isTaggedPointer(const void *ptr)  {
+static inline BOOL kc_isTaggedPointer(const void *ptr)  {
     #if ZP_OBJC_HAVE_TAGGED_POINTERS
         return ((uintptr_t)ptr & ZP_OBJC_TAG_MASK) == ZP_OBJC_TAG_MASK;
     #else
@@ -51,7 +51,7 @@ BOOL _class_isSwift(Class _Nullable cls);
 //bool isObjcObject(const void *inPtr, const Class *allClasses, int classCount);
 //static bool isObjcObject(const void *inPtr, const Class *allClasses, int classCount)
 
-BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
+BOOL kc_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
     //
     // NULL pointer is not an Objective-C object
     //
@@ -67,7 +67,7 @@ BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
     //        return true;
     //    }
     // 直接把这个过滤掉, 本来它其实是算objc的
-    if (zp_isTaggedPointer(inPtr) || zp_objc_isExtTaggedPointer(inPtr)) {
+    if (kc_isTaggedPointer(inPtr) || kc_objc_isExtTaggedPointer(inPtr)) {
         return false;
     }
 
@@ -91,7 +91,7 @@ BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
     //
     // Check if the memory is valid and readable
     //
-    if (!zp_isValidReadableMemory(inPtr)) {
+    if (!kc_isValidReadableMemory(inPtr)) {
         return false;
     }
 
@@ -135,25 +135,26 @@ BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
 //        }
     }
 
-    if (ptrClass == NULL || !zp_isValidReadableMemory((void *)ptrClass)) {
+    if (ptrClass == NULL || !kc_isValidReadableMemory((void *)ptrClass)) {
         return false;
     }
     
+    // ios15 会 crash⚠️
     // Just because this pointer is readable doesn't mean whatever is at
     // it's ISA offset is readable. We need to do the same checks on it's ISA.
     // Even this isn't perfect, because once we call object_isClass, we're
     // going to dereference a member of the metaclass, which may or may not
     // be readable itself. For the time being there is no way to access it
     // to check here, and I have yet to hard-code a solution.
-    Class metaclass = object_getClass(ptrClass);
-    if (!metaclass || !zp_isValidReadableMemory((void *)metaclass)) {
-        return NO;
-    }
+//    Class metaclass = object_getClass(ptrClass);
+//    if (!metaclass || !kc_isValidReadableMemory((void *)metaclass)) {
+//        return NO;
+//    }
     
     // Does the class pointer we got appear as a class to the runtime?
-    if (!object_isClass(ptrClass)) {
-        return NO;
-    }
+//    if (!object_isClass(ptrClass)) {
+//        return NO;
+//    }
 
     //
     // Verifies that the found Class is a known class.
@@ -192,7 +193,7 @@ BOOL zp_isObjcObject(const void *inPtr, CFMutableSetRef registeredClasses) {
     return true;
 }
 
-bool zp_isValidReadableMemory(const void* inPtr) {
+bool kc_isValidReadableMemory(const void* inPtr) {
     kern_return_t error = KERN_SUCCESS;
 
     // Check for read permissions
