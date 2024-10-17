@@ -160,7 +160,42 @@ public extension Mirror {
     }
 }
 
-// MARK:
+// MARK: - 其他信息
+
+public extension Mirror {
+    /// 格式化属性name
+    static func propertyName(_ name: String) -> String {
+        var result = name
+        // 1.懒加载的属性, name会以这个开头
+        if name.hasPrefix("$__lazy_storage_$_") {
+            result = String(name[name.index(name.startIndex, offsetBy: "$__lazy_storage_$_".count)...])
+        }
+        
+        return result
+    }
+    
+    /// 类型名
+    static func typeName(value: Any) -> String {
+        return typeName(name: _typeName(type(of: value)))
+    }
+    
+    /// 类型名
+    static func typeName(name: String) -> String {
+        var _name = name
+        
+        if _name.starts(with: "Swift.Optional<") { // 可选
+            _name = String(_name[_name.index(_name.startIndex, offsetBy: "Swift.Optional<".count)..<_name.index(before: _name.endIndex)])
+        }
+        
+        if _name.starts(with: "__C.") {
+            _name = String(_name[_name.index(_name.startIndex, offsetBy: "__C.".count)...])
+        }
+        
+        return _name
+    }
+}
+
+// MARK: - ObjectIdentifier
 
 public extension ObjectIdentifier {
     /// 生成ObjectIdentifier

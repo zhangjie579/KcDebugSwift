@@ -246,6 +246,10 @@ public class KcFindPropertyTooler: NSObject {
     
     public static let `default` = KcFindPropertyTooler(isContainSuper: false, isContainChildInChild: false)
     
+    /// dump所有方法
+    @objc public class func dumpAllMethods() -> String {
+        KcFindPropertyTooler.kc_dump_allCustomMethodDescription()
+    }
 }
 
 // MARK: - public  oc外部可用
@@ -291,6 +295,64 @@ public extension KcFindPropertyTooler {
             return nil
         }
         return result.propertyResult
+    }
+}
+
+// MARK: - 属性信息相关(动态调试使用，比如lldb)
+
+@objc
+public extension KcFindPropertyTooler {
+    /// 获取属性列表
+    class func propertyList(value: Any) -> [String : String]? {
+        guard let mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
+            return nil
+        }
+        
+        var dict = [String : String]()
+        
+        var currentMirror: Mirror? = mirror.0
+        
+        while let _currentMirror = currentMirror {
+            // 遍历所有属性
+            for (label, childValue) in _currentMirror.children {
+                guard let propertyName = label else {
+                    continue
+                }
+                
+                let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+                
+                dict[name] = Mirror.typeName(value: childValue)
+            }
+            
+            currentMirror = currentMirror?.superclassMirror
+        }
+        
+        return dict
+    }
+    
+    /// 搜索value的属性
+    class func searchProperty(value: Any, key: String) -> Any? {
+        guard let mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
+            return nil
+        }
+        
+        // 遍历所有属性
+        for (label, childValue) in mirror.0.children {
+            guard let propertyName = label else {
+                continue
+            }
+            
+            let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+            
+            guard name == key else {
+                continue
+            }
+            
+            // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
+            return KcJSONHelper.decodeSwiftToJSON(childValue)
+        }
+        
+        return nil
     }
 }
 
