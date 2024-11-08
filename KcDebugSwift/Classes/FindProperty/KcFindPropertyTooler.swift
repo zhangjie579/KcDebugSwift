@@ -21,183 +21,6 @@ import UIKit
  1.本想用个KcIvarTool类来管理这些方法的, but如果它是swift文件的话, lldb有class name的烦恼, 比如为SWIFT_CLASS("_TtC9swiftTest10KcIvarTool"), 要用这个name, so直接定义在NSObject中
  */
 
-@objc
-public extension NSObject {
-    /// 查找UI的属性名(这里包含了CALayer)
-    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findUIPropertyName]
-    /*
-     查不到的情况
-     1. delegate设置为不是UIResponder对象, 或者它不在图层树上
-     */
-    @discardableResult
-    func kc_debug_findUIPropertyName() -> String {
-        
-        /// 处理layer delegate情况, 默认情况下delegate为UIView
-        func handleLayerDelegate(delegate: CALayerDelegate) -> KcFindPropertyTooler.PropertyResult? {
-            if let responder = delegate as? UIResponder {
-                return KcFindPropertyTooler.findResponderChainObjcPropertyName(object: self, startSearchView: responder, isLog: true)
-            } else { // 这种情况暂时不知道如何处理
-                // 👻 请换过其他方式处理, CALayerDelegate不为UIView对象: \(delegate) 👻
-                return nil
-            }
-        }
-        
-        /// 递归图层layer
-        func recursSuperLayer(layer: CALayer) -> String {
-            var superlayer = layer.superlayer
-            
-            while let nextLayer = superlayer {
-                if let delegate = nextLayer.delegate,
-                   let result = handleLayerDelegate(delegate: delegate) {
-                    return result.debugLog
-                } else {
-                    if Mirror.kc_isCustomClass(type(of: nextLayer)),
-                       let result = NSObject.kc_debug_findPropertyName(container: nextLayer, object: self) {
-                        return result.debugLog
-                    }
-                    
-                    superlayer = superlayer?.superlayer
-                }
-            }
-            
-            return "😭😭😭 未找到"
-        }
-        
-        if isKind(of: UIView.self) {
-            return (self as? UIView)?.kc_debug_findPropertyName() ?? "😭😭😭 未找到"
-        } else if isKind(of: CALayer.self), let layer = self as? CALayer {
-            if let delegate = layer.delegate, let result = handleLayerDelegate(delegate: delegate) {
-                return result.debugLog
-            } else { // 没有代理
-                return recursSuperLayer(layer: layer)
-            }
-        }
-        
-        return "😭😭😭 未找到"
-    }
-    
-    /// 为了能在runtime lldb使用
-    /// expr -l objc++ -O -- [NSObject kc_dumpSwift:0x7f8738007690]
-    class func kc_dumpSwift(_ value: Any) {
-        dump(value)
-    }
-    
-    /// expr -l objc++ -O -- [0x7f8738007690 kc_dumpSwift]
-    func kc_dumpSwift() -> Any {
-        return dump(self)
-    }
-    
-    /// 从container容器对象, 查找object的属性名, 不存在返回false (只会从当前对象查找, 不会查找对象属性下的属性的⚠️)
-    /// - Parameters:
-    ///   - container: 容器
-    ///   - object: 要查找的对象
-    /// - Returns: 是否找到
-    class func kc_debug_findPropertyName(container: Any, object: AnyObject) -> KcFindPropertyTooler.PropertyResult? {
-        return KcFindPropertyTooler.findObjcPropertyName(containerObjc: container, object: object, isLog: true)?.propertyResult
-    }
-}
-
-// MARK: - UIView
-
-@objc
-public extension UIView {
-    /// 查找UI的属性名
-    /// expr -l objc++ -O -- [0x7f8738007690 kc_debug_findPropertyName]
-    @discardableResult
-    func kc_debug_findPropertyName() -> String {
-        var findObjc: UIResponder? = self
-        
-        // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
-        while let objc = findObjc {
-            if let result = KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
-                                                                     startSearchView: objc.next,
-                                                                     isLog: true) {
-                if self !== objc {
-                    return "🐶🐶🐶 查询的是系统控件的子控件: \(self) "
-                } else {
-                    return result.debugLog
-                }
-            }
-            
-            findObjc = objc.next
-        }
-        
-        return "😭😭😭 未找到"
-    }
-    
-    /// 查找UI的属性名
-    func kc_debug_findPropertyNameResult() -> KcFindPropertyTooler.PropertyResult? {
-        var findObjc: UIResponder? = self
-        
-        // 循环作用: 当查询的对象为系统控件下面的控件, 比如UIButton下的imageView
-        while let objc = findObjc {
-            if let result = KcFindPropertyTooler.findResponderChainObjcPropertyName(object: objc,
-                                                                     startSearchView: objc.next,
-                                                                     isLog: true) {
-                if self !== objc {
-                    return nil
-                } else {
-                    return result
-                }
-            }
-            
-            findObjc = objc.next
-        }
-        
-        return nil
-    }
-}
-
-// MARK: - 方案2: log出容器的all property info, 然后自己根据address, 去检索
-
-@objc
-public extension NSObject {
-    /// 输出所有ivar
-    /// expr -l objc++ -O -- [((NSObject *)0x7f8738007690) kc_debug_ivarDescription:0]
-    func kc_debug_ivarDescription(_ rawValue: KcFindPropertyType = .default) {
-        type(of: self).kc_debug_ivarDescription(self, rawValue: rawValue)
-    }
-    
-    /// 输出UI相关的ivar
-    // expr -l objc++ -O -- [((NSObject *)0x7f8738007690) kc_debug_UIIvarDescription:0]
-    func kc_debug_UIIvarDescription(_ rawValue: KcFindPropertyType = .default) {
-        type(of: self).kc_debug_UIIvarDescription(self, rawValue: rawValue)
-    }
-    
-    /// 输出所有ivar
-    /// expr -l objc++ -O -- [NSObject kc_debug_ivarDescription:0x7f8738007690 rawValue:0]
-    class func kc_debug_ivarDescription(_ value: Any, rawValue: KcFindPropertyType = .default) {
-        print("------------ 👻 ivar description 👻 ---------------")
-        let ivarTool = KcFindPropertyTooler.init(type: rawValue)
-        let ivarInfo = ivarTool.ivarsFromValue(value, depth: 0)
-        ivarInfo?.log { _ in
-            return true
-        }
-        print("------------ 👻 ivar description 👻 ---------------")
-    }
-    
-    /// 输出UI相关的ivar
-    // expr -l objc++ -O -- [NSObject kc_debug_UIIvarDescription:0x7f8738007690 rawValue:0]
-    class func kc_debug_UIIvarDescription(_ value: Any, rawValue: KcFindPropertyType = .default) {
-        print("------------ 👻 UI ivar description 👻 ---------------")
-        let ivarTool = KcFindPropertyTooler.init(type: rawValue)
-        let ivarInfo = ivarTool.ivarsFromValue(value, depth: 0)
-        ivarInfo?.log { info in
-            guard let objc = info.value as? NSObject else {
-                return false
-            }
-            
-            if objc.isKind(of: UIResponder.self) ||
-                objc.isKind(of: CALayer.self) {
-                return true
-            }
-            
-            return false
-        }
-        print("------------ 👻 UI ivar description 👻 ---------------")
-    }
-}
-
 // MARK: - KcFindPropertyTooler 分析属性工具
 
 @objc
@@ -303,6 +126,7 @@ public extension KcFindPropertyTooler {
 @objc
 public extension KcFindPropertyTooler {
     /// 获取属性列表
+    /// expr -l objc++ -O -- [KcFindPropertyTooler propertyListWithValue:self]
     class func propertyList(value: Any) -> [String : String]? {
         guard let mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
             return nil
@@ -331,6 +155,8 @@ public extension KcFindPropertyTooler {
     }
     
     /// 搜索value的属性
+    /// expr -l objc++ -O -- [KcFindPropertyTooler searchPropertyWithValue:self, key: @"xx"]
+    /// 由于这是oc的方法, 如果value是struct的话, 获取的Mirror有问题, 拿不到属性⚠️
     class func searchProperty(value: Any, key: String) -> Any? {
         guard let mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
             return nil
@@ -351,6 +177,57 @@ public extension KcFindPropertyTooler {
             // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
             return KcJSONHelper.decodeSwiftToJSON(childValue)
         }
+        
+        return nil
+    }
+    
+    /// 搜索value的keyPath属性
+    /// expr -l objc++ -O -- [KcFindPropertyTooler searchPropertyWithValue:self, keyPath: @"xx"]
+    /// 由于这是oc的方法, 如果value是struct的话, 获取的Mirror有问题, 拿不到属性⚠️
+    class func searchProperty(value: Any, keyPath: String) -> Any? {
+        guard var mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
+            return nil
+        }
+        
+        let keys = keyPath.split(separator: ".")
+            .map(String.init)
+        
+        for (i, key) in keys.enumerated() {
+            var hasFind = false
+            
+            for (label, childValue) in mirror.0.children {
+                guard let propertyName = label else {
+                    continue
+                }
+                
+                let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+                
+                guard name == key else {
+                    continue
+                }
+                
+                hasFind = true
+                
+                // 最后1个
+                if i == keys.count - 1 {
+                    // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
+                    return KcJSONHelper.decodeSwiftToJSON(childValue)
+                } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
+                    mirror = childMirror
+                    break
+                } else {
+                    hasFind = false
+                    break
+                }
+            }
+            
+            if !hasFind {
+                return nil
+            }
+        }
+        
+        // 遍历所有属性
+        
         
         return nil
     }
