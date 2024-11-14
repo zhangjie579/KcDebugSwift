@@ -1,15 +1,15 @@
 PODS:
-  - KcDebugSwift (0.1.1):
-    - KcDebugSwift/FindProperty (= 0.1.1)
-    - KcDebugSwift/MRC (= 0.1.1)
-    - KcDebugSwift/Tool (= 0.1.1)
-    - KcDebugSwift/UIProperty (= 0.1.1)
-  - KcDebugSwift/FindProperty (0.1.1):
+  - KcDebugSwift (0.1.5):
+    - KcDebugSwift/FindProperty (= 0.1.5)
+    - KcDebugSwift/MRC (= 0.1.5)
+    - KcDebugSwift/Tool (= 0.1.5)
+    - KcDebugSwift/UIProperty (= 0.1.5)
+  - KcDebugSwift/FindProperty (0.1.5):
     - KcDebugSwift/Tool
-  - KcDebugSwift/MRC (0.1.1)
-  - KcDebugSwift/Tool (0.1.1):
+  - KcDebugSwift/MRC (0.1.5)
+  - KcDebugSwift/Tool (0.1.5):
     - KcDebugSwift/MRC
-  - KcDebugSwift/UIProperty (0.1.1):
+  - KcDebugSwift/UIProperty (0.1.5):
     - KcDebugSwift/FindProperty
 
 DEPENDENCIES:
@@ -20,8 +20,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  KcDebugSwift: 2322610c97a9ddb3ac2d685b3d17824f749ff0f4
+  KcDebugSwift: 9bcb978c3c98d2ec903b23b434d034952378fa41
 
 PODFILE CHECKSUM: bb708afe3e425d64bcb52c127384743d4312fb69
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.15.2
