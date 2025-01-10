@@ -38,24 +38,31 @@ public class KcSwiftFindPropertyTooler {
     
     /// 搜索value的属性
     public class func searchProperty(value: Any, key: String) -> Any? {
-        guard let mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
+        guard let mirrorInfo = Mirror.kc_makeFilterOptional(reflecting: value) else {
             return nil
         }
         
-        // 遍历所有属性
-        for (label, childValue) in mirror.0.children {
-            guard let propertyName = label else {
-                continue
+        var mirror: Mirror? = mirrorInfo.0
+        
+        while let _mirror = mirror {
+            // 遍历所有属性
+            for (label, childValue) in _mirror.children {
+                guard let propertyName = label else {
+                    continue
+                }
+                
+                let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+                
+                if name != key {
+                    continue
+                }
+                
+                // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
+                return KcJSONHelper.decodeSwiftToJSON(childValue)
             }
             
-            let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
-            
-            guard name == key else {
-                continue
-            }
-            
-            // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
-            return KcJSONHelper.decodeSwiftToJSON(childValue)
+            // 父类
+            mirror = mirror?.superclassMirror
         }
         
         return nil
@@ -63,43 +70,53 @@ public class KcSwiftFindPropertyTooler {
     
     /// 搜索value的keyPath属性
     public class func searchProperty(value: Any, keyPath: String) -> Any? {
-        guard var mirror = Mirror.kc_makeFilterOptional(reflecting: value) else {
+        guard let mirrorInfo = Mirror.kc_makeFilterOptional(reflecting: value) else {
             return nil
         }
         
         let keys = keyPath.split(separator: ".")
             .map(String.init)
         
+        var mirror: Mirror? = mirrorInfo.0
+        
         for (i, key) in keys.enumerated() {
-            var hasFind = false
             
-            for (label, childValue) in mirror.0.children {
-                guard let propertyName = label else {
-                    continue
+            while let _mirror = mirror {
+                // 是否发现当前
+                var hasFindCurrent: Bool = false
+                
+                for (label, childValue) in _mirror.children {
+                    guard let propertyName = label else {
+                        continue
+                    }
+                    
+                    let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+                    
+                    if name != key {
+                        continue
+                    }
+                    
+                    hasFindCurrent = true
+                    
+                    // 最后1个
+                    if i == keys.count - 1 {
+                        // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
+                        return KcJSONHelper.decodeSwiftToJSON(childValue)
+                    } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
+                        mirror = childMirror.0
+                        break
+                    }
                 }
                 
-                let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
-                
-                guard name == key else {
-                    continue
-                }
-                
-                hasFind = true
-                
-                // 最后1个
-                if i == keys.count - 1 {
-                    // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
-                    return KcJSONHelper.decodeSwiftToJSON(childValue)
-                } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
-                    mirror = childMirror
+                if hasFindCurrent { // 当前的已经找到了 - 继续下一级
                     break
-                } else {
-                    hasFind = false
-                    break
+                } else { // 当前没找到 - 通过super找
+                    mirror = mirror?.superclassMirror
                 }
             }
             
-            if !hasFind {
+            // 能到这说明，要么下一级、要么superclassMirror, 如果没有mirror肯定就不用再找了
+            if mirror == nil {
                 return nil
             }
         }
