@@ -105,6 +105,9 @@ public class KcSwiftFindPropertyTooler {
                     } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
                         mirror = childMirror.0
                         break
+                    } else {
+                        mirror = nil
+                        break
                     }
                 }
                 
@@ -122,6 +125,36 @@ public class KcSwiftFindPropertyTooler {
         }
         
         // 遍历所有属性
+        
+        return nil
+    }
+}
+
+// MARK: - private
+
+private extension KcSwiftFindPropertyTooler {
+    class func searchValueProperty(mirror: Mirror, key: String) -> Any? {
+        var currentMirror: Mirror? = mirror
+        
+        while let _currentMirror = currentMirror {
+            // 遍历当前
+            for (label, childValue) in _currentMirror.children {
+                guard let propertyName = label else {
+                    continue
+                }
+                
+                let name = KcFindPropertyTooler.PropertyInfo.propertyNameFormatter(propertyName)
+                
+                guard name == key else {
+                    continue
+                }
+                
+                return childValue
+            }
+            
+            // 没找到就找super
+            currentMirror = currentMirror?.superclassMirror
+        }
         
         return nil
     }
