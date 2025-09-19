@@ -58,7 +58,7 @@ public class KcSwiftFindPropertyTooler {
                 }
                 
                 // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
-                return KcJSONHelper.decodeSwiftToJSON(childValue)
+                return KcJSONHelper.decodeSwiftToJSON(childValue) ?? childValue
             }
             
             // 父类
@@ -78,6 +78,7 @@ public class KcSwiftFindPropertyTooler {
             .map(String.init)
         
         var mirror: Mirror? = mirrorInfo.0
+        var currentValue: Any? = value
         
         for (i, key) in keys.enumerated() {
             
@@ -101,12 +102,19 @@ public class KcSwiftFindPropertyTooler {
                     // 最后1个
                     if i == keys.count - 1 {
                         // KcJSONHelper.decodeToJSON(childValue) 调用这个方法的话, 如果value不是oc的类型, 转换可能会出现问题⚠️
-                        return KcJSONHelper.decodeSwiftToJSON(childValue)
+                        let jsonValue = KcJSONHelper.decodeSwiftToJSON(childValue)
+                        if jsonValue != nil {
+                            return jsonValue
+                        } else {
+                            return childValue
+                        }
                     } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
                         mirror = childMirror.0
+                        currentValue = childValue
                         break
                     } else {
                         mirror = nil
+                        currentValue = nil
                         break
                     }
                 }
@@ -120,7 +128,19 @@ public class KcSwiftFindPropertyTooler {
             
             // 能到这说明，要么下一级、要么superclassMirror, 如果没有mirror肯定就不用再找了
             if mirror == nil {
-                return nil
+                // 兼容纯objc的对象
+                if let objc = currentValue as? NSObject, let childValue = objc.kcDebugIvar(forKey: key) {
+                    if i == keys.count - 1 {
+                        return childValue
+                    } else if let childMirror = Mirror.kc_makeFilterOptional(reflecting: childValue) {
+                        mirror = childMirror.0
+                        currentValue = childValue
+                    } else {
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
             }
         }
         

@@ -23,6 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 + (NSString *)parentClassHierarchy;
+
+- (nullable id)kcDebugIvarForKey:(NSString *)key;
+
 @end
 
 NS_ASSUME_NONNULL_END

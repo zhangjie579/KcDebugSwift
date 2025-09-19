@@ -168,6 +168,29 @@ static void getSuper(Class class, NSMutableString *result) {
     return result;
 }
 
+- (nullable id)kcDebugIvarForKey:(NSString *)key {
+    if ([self respondsToSelector:NSSelectorFromString(key)]) {
+        return [self valueForKey:key];
+    }
+    
+    unsigned int outCount;
+    Ivar *ivars = class_copyIvarList([self class], &outCount);
+    
+    id result = nil;
+    
+    for (unsigned int i = 0; i < outCount; i++) {
+        NSString *name = [NSString stringWithCString:ivar_getName(ivars[i]) encoding:NSUTF8StringEncoding];
+        
+        if ([name isEqualToString:key]) {
+            result = object_getIvar(self, ivars[i]);
+        }
+    }
+    
+    free(ivars);
+    
+    return result;
+}
+
 #pragma mark - Private
 
 + (NSArray *)methodsForClass:(Class)class typeFormat:(NSString *)type {
