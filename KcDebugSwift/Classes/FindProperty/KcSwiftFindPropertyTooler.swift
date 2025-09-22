@@ -136,7 +136,8 @@ public class KcSwiftFindPropertyTooler {
                         mirror = childMirror.0
                         currentValue = childValue
                     } else {
-                        return nil
+                        mirror = nil
+                        currentValue = childValue
                     }
                 } else {
                     return nil
