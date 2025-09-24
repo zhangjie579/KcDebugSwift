@@ -196,4 +196,39 @@ private extension KcJSONHelper {
         
         return dict.isEmpty ? nil : dict
     }
+    
+    /// 处理objc
+    class func _decodeObjcToJSON(objc: NSObject, currentIndex: Int, maxCount: Int) -> [String : Any]? {
+        var currentCls: AnyClass? = object_getClass(objc)
+        
+        var dict: [String: Any] = [:]
+        
+        while let _currentCls = currentCls {
+            var count: UInt32 = 0
+            
+            currentCls = class_getSuperclass(_currentCls)
+            
+            guard let ivars = class_copyIvarList(_currentCls, &count) else {
+                continue
+            }
+            
+            for i in 0 ..< count {
+                guard let name = ivar_getName(ivars[Int(i)]) else {
+                    continue
+                }
+                
+                let nameStr = String(cString: name)
+                
+                // let value = object_getIvar(objc, ivars[Int(i)]) 这种可能会crash
+                // kvo也存在crash
+                let value = objc.value(forKey: nameStr)
+                
+                if let _value = value {
+                    dict[nameStr] = _decodeToJSON(_value, currentIndex: currentIndex + 1, maxCount: maxCount)
+                }
+            }
+        }
+        
+        return dict.isEmpty ? nil : dict
+    }
 }

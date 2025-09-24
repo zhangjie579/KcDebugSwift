@@ -173,22 +173,32 @@ static void getSuper(Class class, NSMutableString *result) {
         return [self valueForKey:key];
     }
     
-    unsigned int outCount;
-    Ivar *ivars = class_copyIvarList([self class], &outCount);
+    Class currentClass = [self class];
     
-    id result = nil;
-    
-    for (unsigned int i = 0; i < outCount; i++) {
-        NSString *name = [NSString stringWithCString:ivar_getName(ivars[i]) encoding:NSUTF8StringEncoding];
+    while (currentClass) {
+        unsigned int outCount;
+        Ivar *ivars = class_copyIvarList(currentClass, &outCount);
         
-        if ([name isEqualToString:key]) {
-            result = object_getIvar(self, ivars[i]);
+        id result = nil;
+        
+        for (unsigned int i = 0; i < outCount; i++) {
+            NSString *name = [NSString stringWithCString:ivar_getName(ivars[i]) encoding:NSUTF8StringEncoding];
+            
+            if ([name isEqualToString:key]) {
+                result = object_getIvar(self, ivars[i]);
+            }
+        }
+        
+        free(ivars);
+        
+        if (result) {
+            return result;
+        } else {
+            currentClass = class_getSuperclass(currentClass);
         }
     }
     
-    free(ivars);
-    
-    return result;
+    return nil;
 }
 
 #pragma mark - Private
